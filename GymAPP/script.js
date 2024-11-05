@@ -1,20 +1,177 @@
 // Exercise categories and data
-const exercises = {
-    chest: ['Bench Press', 'Incline Press', 'Dumbbell Flyes'],
-    back: ['Pull-ups', 'Rows', 'Deadlift'],
-    legs: ['Squats', 'Leg Press', 'Lunges'],
-    shoulders: ['Overhead Press', 'Lateral Raises', 'Front Raises'],
-    arms: ['Bicep Curls', 'Tricep Extensions', 'Hammer Curls'],
-    core: ['Planks', 'Crunches', 'Russian Twists']
-};
+const allMuscles = [
+    'Chest',
+    'Front Delts',
+    'Side Delts',
+    'Rear Delts',
+    'Lats',
+    'Traps',
+    'Rhomboids',
+    'Lower Back',
+    'Biceps',
+    'Triceps',
+    'Forearms',
+    'Abs',
+    'Obliques',
+    'Quads',
+    'Hamstrings',
+    'Glutes',
+    'Calves',
+    'Hip Flexors',
+    'Adductors',
+    'Serratus Anterior',  // Additional muscles that are relevant
+    'Brachialis',
+    'Core Stabilizers'
+];
 
 const muscleGroups = {
-    chest: ['Upper Chest', 'Middle Chest', 'Lower Chest'],
-    back: ['Upper Back', 'Lower Back', 'Lats', 'Traps'],
-    shoulders: ['Front Deltoid', 'Side Deltoid', 'Rear Deltoid'],
-    arms: ['Biceps', 'Triceps', 'Forearms'],
-    legs: ['Quads', 'Hamstrings', 'Calves', 'Glutes'],
-    core: ['Rectus Abdominis', 'Obliques', 'Lower Back']
+    chest: ['Chest', 'Front Delts', 'Serratus Anterior'],
+    back: ['Lats', 'Traps', 'Rhomboids', 'Lower Back'],
+    shoulders: ['Front Delts', 'Side Delts', 'Rear Delts'],
+    arms: ['Biceps', 'Triceps', 'Forearms', 'Brachialis'],
+    legs: ['Quads', 'Hamstrings', 'Glutes', 'Calves', 'Hip Flexors', 'Adductors'],
+    core: ['Abs', 'Obliques', 'Lower Back', 'Core Stabilizers']
+};
+
+const exercises = {
+    chest: [
+        {
+            name: 'Bench Press',
+            muscles: {
+                primary: ['Chest', 'Front Delts'],
+                secondary: ['Triceps', 'Core Stabilizers']
+            }
+        },
+        {
+            name: 'Incline Press',
+            muscles: {
+                primary: ['Chest', 'Front Delts'],
+                secondary: ['Triceps', 'Serratus Anterior']
+            }
+        },
+        {
+            name: 'Dumbbell Flyes',
+            muscles: {
+                primary: ['Chest'],
+                secondary: ['Front Delts', 'Serratus Anterior']
+            }
+        }
+    ],
+    back: [
+        {
+            name: 'Pull-ups',
+            muscles: {
+                primary: ['Lats', 'Traps'],
+                secondary: ['Biceps', 'Forearms', 'Core Stabilizers']
+            }
+        },
+        {
+            name: 'Rows',
+            muscles: {
+                primary: ['Lats', 'Rhomboids'],
+                secondary: ['Biceps', 'Rear Delts', 'Core Stabilizers']
+            }
+        },
+        {
+            name: 'Deadlift',
+            muscles: {
+                primary: ['Lower Back', 'Glutes'],
+                secondary: ['Hamstrings', 'Traps', 'Forearms', 'Core Stabilizers']
+            }
+        }
+    ],
+    legs: [
+        {
+            name: 'Squats',
+            muscles: {
+                primary: ['Quads', 'Glutes'],
+                secondary: ['Lower Back', 'Core Stabilizers', 'Hamstrings', 'Calves']
+            }
+        },
+        {
+            name: 'Leg Press',
+            muscles: {
+                primary: ['Quads', 'Glutes'],
+                secondary: ['Hamstrings', 'Calves']
+            }
+        },
+        {
+            name: 'Lunges',
+            muscles: {
+                primary: ['Quads', 'Glutes'],
+                secondary: ['Hamstrings', 'Core Stabilizers', 'Calves']
+            }
+        }
+    ],
+    shoulders: [
+        {
+            name: 'Overhead Press',
+            muscles: {
+                primary: ['Front Delts', 'Side Delts'],
+                secondary: ['Triceps', 'Core Stabilizers', 'Upper Chest']
+            }
+        },
+        {
+            name: 'Lateral Raises',
+            muscles: {
+                primary: ['Side Delts'],
+                secondary: ['Traps', 'Front Delts']
+            }
+        },
+        {
+            name: 'Front Raises',
+            muscles: {
+                primary: ['Front Delts'],
+                secondary: ['Upper Chest', 'Core Stabilizers']
+            }
+        }
+    ],
+    arms: [
+        {
+            name: 'Bicep Curls',
+            muscles: {
+                primary: ['Biceps'],
+                secondary: ['Forearms', 'Front Delts']
+            }
+        },
+        {
+            name: 'Tricep Extensions',
+            muscles: {
+                primary: ['Triceps'],
+                secondary: ['Forearms']
+            }
+        },
+        {
+            name: 'Hammer Curls',
+            muscles: {
+                primary: ['Biceps', 'Brachialis'],
+                secondary: ['Forearms']
+            }
+        }
+    ],
+    core: [
+        {
+            name: 'Planks',
+            muscles: {
+                primary: ['Abs', 'Core Stabilizers'],
+                secondary: ['Lower Back', 'Shoulders']
+            }
+        },
+        {
+            name: 'Crunches',
+            muscles: {
+                primary: ['Abs'],
+                secondary: ['Hip Flexors']
+            }
+        },
+        {
+            name: 'Russian Twists',
+            muscles: {
+                primary: ['Abs', 'Obliques'],
+                secondary: ['Hip Flexors', 'Core Stabilizers']
+            }
+        }
+    ]
 };
 
 // Initialize userExercises object
@@ -110,8 +267,8 @@ function updateExerciseOptions() {
     if (category && exercises[category]) {
         exercises[category].forEach(exercise => {
             const option = document.createElement('option');
-            option.value = exercise;
-            option.textContent = `${exercise} (Built-in)`;
+            option.value = exercise.name;
+            option.textContent = `${exercise.name} (Built-in)`;
             exerciseSelect.appendChild(option);
         });
     }
@@ -230,15 +387,19 @@ function showExerciseDetails(exercise, type, category) {
     if (type === 'custom') {
         exerciseData = userExercises[category].find(e => e.name === exercise);
     } else {
-        exerciseData = {
-            name: exercise,
-            category: category,
-            muscles: {
-                primary: muscleGroups[category] || [],
-                secondary: []
-            },
-            type: 'built-in'
-        };
+        // Fix: Get the correct exercise data from the exercises object
+        exerciseData = exercises[category].find(e => e.name === exercise);
+        if (!exerciseData) {
+            exerciseData = {
+                name: exercise,
+                category: category,
+                muscles: {
+                    primary: [],
+                    secondary: []
+                },
+                type: 'built-in'
+            };
+        }
     }
 
     currentEditingExercise = { ...exerciseData, originalType: type, originalCategory: category };
@@ -402,9 +563,9 @@ function renderExerciseList() {
             const div = document.createElement('div');
             div.className = 'exercise-item';
             div.innerHTML = `
-                <span>${exercise} (${category}) - Built-in</span>
+                <span>${exercise.name} (${category}) - Built-in</span>
             `;
-            div.onclick = () => showExerciseDetails(exercise, 'built-in', category);
+            div.onclick = () => showExerciseDetails(exercise.name, 'built-in', category);
             exerciseList.appendChild(div);
         });
     }
@@ -454,8 +615,8 @@ function updateMuscleOptions(category, directContainer, indirectContainer) {
     directContainer.innerHTML = '';
     indirectContainer.innerHTML = '';
 
+    // Add primary muscles based on category
     if (category && muscleGroups[category]) {
-        // Add primary muscles
         muscleGroups[category].forEach(muscle => {
             const option = document.createElement('div');
             option.className = 'muscle-option';
@@ -464,20 +625,17 @@ function updateMuscleOptions(category, directContainer, indirectContainer) {
             option.addEventListener('click', () => toggleMuscleSelection(option));
             directContainer.appendChild(option);
         });
-
-        // Add all other muscles as secondary
-        Object.values(muscleGroups)
-            .flat()
-            .filter(muscle => !muscleGroups[category].includes(muscle))
-            .forEach(muscle => {
-                const option = document.createElement('div');
-                option.className = 'muscle-option';
-                option.dataset.muscle = muscle;
-                option.textContent = muscle;
-                option.addEventListener('click', () => toggleMuscleSelection(option));
-                indirectContainer.appendChild(option);
-            });
     }
+
+    // Add ALL possible muscles as secondary options
+    allMuscles.forEach(muscle => {
+        const option = document.createElement('div');
+        option.className = 'muscle-option';
+        option.dataset.muscle = muscle;
+        option.textContent = muscle;
+        option.addEventListener('click', () => toggleMuscleSelection(option));
+        indirectContainer.appendChild(option);
+    });
 }
 
 function toggleMuscleSelection(element) {
