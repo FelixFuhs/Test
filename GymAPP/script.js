@@ -319,23 +319,38 @@ function saveExerciseChanges() {
         return;
     }
 
-    // If this was a built-in exercise, create a new custom exercise
-    if (currentEditingExercise.originalType === 'built-in') {
-        if (!userExercises[newCategory]) {
-            userExercises[newCategory] = [];
+    // Initialize category array if it doesn't exist
+    if (!userExercises[newCategory]) {
+        userExercises[newCategory] = [];
+    }
+
+    const updatedExercise = {
+        name: newName,
+        category: newCategory,
+        muscles: {
+            primary: newDirectMuscles,
+            secondary: newIndirectMuscles
         }
-        userExercises[newCategory].push({
-            name: newName,
-            category: newCategory,
-            muscles: {
-                primary: newDirectMuscles,
-                secondary: newIndirectMuscles
-            },
-            isCustomVersion: true,
-            originalName: currentEditingExercise.name
-        });
+    };
+
+    // Handle built-in exercise editing
+    if (currentEditingExercise.originalType === 'built-in') {
+        // Check if a custom version already exists
+        const existingCustomVersion = userExercises[newCategory].find(
+            e => e.originalName === currentEditingExercise.name
+        );
+
+        if (existingCustomVersion) {
+            // Update existing custom version
+            Object.assign(existingCustomVersion, updatedExercise);
+            existingCustomVersion.originalName = currentEditingExercise.name;
+        } else {
+            // Create new custom version
+            updatedExercise.originalName = currentEditingExercise.name;
+            userExercises[newCategory].push(updatedExercise);
+        }
     } else {
-        // Update existing custom exercise
+        // Handle custom exercise editing
         const oldCategory = currentEditingExercise.originalCategory;
         
         // Remove from old category if category changed
@@ -343,27 +358,15 @@ function saveExerciseChanges() {
             userExercises[oldCategory] = userExercises[oldCategory].filter(
                 e => e.name !== currentEditingExercise.name
             );
-            if (!userExercises[newCategory]) {
-                userExercises[newCategory] = [];
-            }
         }
 
-        // Find and update the exercise
-        const exerciseIndex = userExercises[newCategory].findIndex(
+        // Find and update existing exercise or add new one
+        const existingIndex = userExercises[newCategory].findIndex(
             e => e.name === currentEditingExercise.name
         );
 
-        const updatedExercise = {
-            name: newName,
-            category: newCategory,
-            muscles: {
-                primary: newDirectMuscles,
-                secondary: newIndirectMuscles
-            }
-        };
-
-        if (exerciseIndex !== -1) {
-            userExercises[newCategory][exerciseIndex] = updatedExercise;
+        if (existingIndex !== -1) {
+            userExercises[newCategory][existingIndex] = updatedExercise;
         } else {
             userExercises[newCategory].push(updatedExercise);
         }
@@ -372,7 +375,7 @@ function saveExerciseChanges() {
     saveUserExercises();
     renderExerciseList();
     
-    // Close modal or return to view mode
+    // Close modal
     document.getElementById('exercise-details-modal').style.display = 'none';
 }
 
@@ -398,7 +401,9 @@ function renderExerciseList() {
         exerciseArray.forEach(exercise => {
             const div = document.createElement('div');
             div.className = 'exercise-item';
-            div.textContent = `${exercise} (${category}) - Built-in`;
+            div.innerHTML = `
+                <span>${exercise} (${category}) - Built-in</span>
+            `;
             div.onclick = () => showExerciseDetails(exercise, 'built-in', category);
             exerciseList.appendChild(div);
         });
@@ -410,8 +415,21 @@ function renderExerciseList() {
         exerciseArray.forEach(exercise => {
             const div = document.createElement('div');
             div.className = 'exercise-item';
-            div.textContent = `${exercise.name} (${category}) - Custom`;
-            div.onclick = () => showExerciseDetails(exercise.name, 'custom', category);
+            div.innerHTML = `
+                <span>${exercise.name} (${category}) - Custom</span>
+                <button class="delete-exercise" title="Delete Exercise">×</button>
+            `;
+            
+            // Prevent click propagation on delete button
+            const deleteBtn = div.querySelector('.delete-exercise');
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deleteCustomExercise(exercise.name, category);
+            };
+            
+            // Show details when clicking on the exercise name
+            div.querySelector('span').onclick = () => showExerciseDetails(exercise.name, 'custom', category);
+            
             exerciseList.appendChild(div);
         });
     }
