@@ -75,18 +75,38 @@ main {
 }
 
 .exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: #f8f8f8;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 0.8rem;
     margin-bottom: 0.5rem;
-    cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .exercise-item:hover {
     background: #f0f0f0;
     transform: translateX(5px);
+}
+
+.delete-exercise {
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.delete-exercise:hover {
+    background: #cc0000;
 }
 
 .modal {

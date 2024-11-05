@@ -43,6 +43,7 @@ let currentDay = null;
 
 // Initialize
 function init() {
+    loadUserExercises();
     loadWorkoutData();
     updateWeekDisplay();
     setupEventListeners();
@@ -105,24 +106,22 @@ function updateExerciseOptions() {
     const category = categorySelect.value;
     exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
 
-    // Merge predefined and user exercises
-    const allExercises = { ...exercises };
-    
-    // Add user exercises
-    if (userExercises[category]) {
-        userExercises[category].forEach(exercise => {
-            if (!allExercises[category]) {
-                allExercises[category] = [];
-            }
-            allExercises[category].push(exercise);
+    // First add built-in exercises
+    if (category && exercises[category]) {
+        exercises[category].forEach(exercise => {
+            const option = document.createElement('option');
+            option.value = exercise;
+            option.textContent = `${exercise} (Built-in)`;
+            exerciseSelect.appendChild(option);
         });
     }
 
-    if (category && allExercises[category]) {
-        allExercises[category].forEach(exercise => {
+    // Then add user-created exercises
+    if (category && userExercises[category]) {
+        userExercises[category].forEach(exercise => {
             const option = document.createElement('option');
-            option.value = typeof exercise === 'string' ? exercise : exercise.name;
-            option.textContent = typeof exercise === 'string' ? exercise : exercise.name;
+            option.value = exercise.name;
+            option.textContent = `${exercise.name} (Custom)`;
             exerciseSelect.appendChild(option);
         });
     }
@@ -174,14 +173,35 @@ function renderWorkouts() {
         exercisesList.innerHTML = '';
 
         if (workoutData[weekKey] && workoutData[weekKey][day]) {
-            workoutData[weekKey][day].forEach(exerciseData => {
+            workoutData[weekKey][day].forEach((exerciseData, index) => {
                 const exerciseItem = document.createElement('div');
                 exerciseItem.className = 'exercise-item';
-                exerciseItem.textContent = `${exerciseData.exercise} - ${exerciseData.sets} sets x ${exerciseData.reps} reps @ ${exerciseData.weight} kg`;
+                
+                // Exercise info
+                const exerciseInfo = document.createElement('span');
+                exerciseInfo.textContent = `${exerciseData.exercise} - ${exerciseData.sets} sets x ${exerciseData.reps} reps @ ${exerciseData.weight} kg`;
+                exerciseItem.appendChild(exerciseInfo);
+                
+                // Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-exercise';
+                deleteBtn.innerHTML = '&times;';
+                deleteBtn.onclick = () => deleteExercise(day, index);
+                exerciseItem.appendChild(deleteBtn);
+                
                 exercisesList.appendChild(exerciseItem);
             });
         }
     });
+}
+
+function deleteExercise(day, index) {
+    const weekKey = getWeekKey();
+    if (confirm('Are you sure you want to delete this exercise?')) {
+        workoutData[weekKey][day].splice(index, 1);
+        saveWorkoutData();
+        renderWorkouts();
+    }
 }
 
 function resetModalFields() {
@@ -202,27 +222,27 @@ function renderExerciseList() {
     if (!exerciseList) return;
     
     exerciseList.innerHTML = '';
-
-    // Display both predefined and user exercises
-    const allExercises = { ...exercises, ...userExercises };
     
-    for (const category in allExercises) {
-        const exercises = allExercises[category];
-        exercises.forEach(exercise => {
-            const exerciseItem = document.createElement('div');
-            exerciseItem.className = 'exercise-item';
-            
-            // Handle both string and object exercise formats
-            const exerciseName = typeof exercise === 'string' ? exercise : exercise.name;
-            const exerciseDetails = typeof exercise === 'object' ? exercise : null;
-            
-            exerciseItem.textContent = `${exerciseName} (${category})`;
-            
-            if (exerciseDetails) {
-                exerciseItem.title = `Primary: ${exerciseDetails.muscles.primary.join(', ')}\nSecondary: ${exerciseDetails.muscles.secondary.join(', ')}`;
-            }
-            
-            exerciseList.appendChild(exerciseItem);
+    // First, display predefined exercises
+    for (const category in exercises) {
+        const exerciseArray = exercises[category];
+        exerciseArray.forEach(exercise => {
+            const div = document.createElement('div');
+            div.className = 'exercise-item';
+            div.textContent = `${exercise} (${category}) - Built-in`;
+            exerciseList.appendChild(div);
+        });
+    }
+
+    // Then, display user-added exercises
+    for (const category in userExercises) {
+        const exerciseArray = userExercises[category];
+        exerciseArray.forEach(exercise => {
+            const div = document.createElement('div');
+            div.className = 'exercise-item';
+            const muscleInfo = `Primary: ${exercise.muscles.primary.join(', ')} | Secondary: ${exercise.muscles.secondary.join(', ')}`;
+            div.textContent = `${exercise.name} (${category}) - ${muscleInfo}`;
+            exerciseList.appendChild(div);
         });
     }
 }
@@ -277,14 +297,20 @@ function toggleMuscleSelection(element) {
 }
 
 // Simplified add new exercise function
-function addNewExercise() {
-    const name = document.getElementById('new-exercise-name').value;
+function addNewExercise(event) {
+    event.preventDefault(); // Prevent form submission
+
+    // Get form values
+    const name = document.getElementById('new-exercise-name').value.trim();
     const category = document.getElementById('new-exercise-category').value;
-    const directMuscles = Array.from(document.getElementById('direct-muscles').getElementsByClassName('selected'))
+    
+    // Get selected muscles
+    const directMuscles = Array.from(document.querySelectorAll('#direct-muscles .muscle-option.selected'))
         .map(el => el.dataset.muscle);
-    const indirectMuscles = Array.from(document.getElementById('indirect-muscles').getElementsByClassName('selected'))
+    const indirectMuscles = Array.from(document.querySelectorAll('#indirect-muscles .muscle-option.selected'))
         .map(el => el.dataset.muscle);
 
+    // Validation
     if (!name || !category) {
         alert('Please enter exercise name and select category');
         return;
@@ -295,11 +321,7 @@ function addNewExercise() {
         return;
     }
 
-    // Initialize category array if it doesn't exist
-    if (!userExercises[category]) {
-        userExercises[category] = [];
-    }
-
+    // Create new exercise object
     const newExercise = {
         name: name,
         category: category,
@@ -309,25 +331,29 @@ function addNewExercise() {
         }
     };
 
-    // Add the new exercise
+    // Initialize category if it doesn't exist
+    if (!userExercises[category]) {
+        userExercises[category] = [];
+    }
+
+    // Add the exercise
     userExercises[category].push(newExercise);
     
     // Save to localStorage
     saveUserExercises();
-    
+
     // Reset form
-    resetNewExerciseFields();
-    
-    // Clear muscle selections
-    document.querySelectorAll('.muscle-option.selected').forEach(el => {
-        el.classList.remove('selected');
+    document.getElementById('new-exercise-name').value = '';
+    document.getElementById('new-exercise-category').value = '';
+    document.querySelectorAll('.muscle-option').forEach(option => {
+        option.classList.remove('selected');
     });
-    
-    // Update the display
+
+    // Update exercise list
     renderExerciseList();
-    
-    // Show confirmation
-    alert(`Exercise "${name}" has been added successfully!`);
+
+    // Show success message
+    alert('Exercise added successfully!');
 }
 
 function resetNewExerciseFields() {
@@ -361,6 +387,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Debug log
         console.log('User exercises loaded:', userExercises);
+        
+        const addButton = document.getElementById('add-new-exercise-btn');
+        if (addButton) {
+            addButton.addEventListener('click', addNewExercise);
+        }
     } else {
         init();
     }
