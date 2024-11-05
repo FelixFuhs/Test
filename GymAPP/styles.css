@@ -1,15 +1,15 @@
+/* Update color variables */
 :root {
-    --primary-color: #2C3E50;
-    --secondary-color: #3498DB;
-    --accent-color: #E74C3C;
-    --background-color: #F8F9FA;
-    --card-background: #FFFFFF;
-    --text-primary: #2C3E50;
-    --text-secondary: #7F8C8D;
-    --border-color: #E9ECEF;
-    --success-color: #2ECC71;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-large: 0 8px 15px rgba(0, 0, 0, 0.1);
+    --primary-color: #333333;       /* Dark gray */
+    --secondary-color: #555555;     /* Medium gray */
+    --accent-color: #000000;        /* Black for important elements */
+    --background-color: #F9F9F9;    /* Light gray */
+    --card-background: #FFFFFF;     /* White */
+    --text-primary: #222222;        /* Dark text */
+    --text-secondary: #666666;      /* Medium text */
+    --border-color: #DDDDDD;        /* Light gray border */
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-large: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 body {
@@ -21,9 +21,10 @@ body {
     line-height: 1.6;
 }
 
+/* Simplify header */
 header {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--background-color);
+    color: var(--text-primary);
     padding: 1.5rem;
     box-shadow: var(--shadow);
 }
@@ -42,20 +43,21 @@ nav {
     margin-top: 1rem;
 }
 
+/* Simplify navigation links and buttons */
 nav a, nav button {
-    color: white;
+    background-color: transparent;
+    color: var(--text-primary);
     text-decoration: none;
     padding: 0.5rem 1rem;
     border-radius: 6px;
     transition: all 0.3s ease;
     font-weight: 500;
-    background-color: rgba(255, 255, 255, 0.1);
     border: none;
     cursor: pointer;
 }
 
 nav a:hover, nav button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--card-background);
     transform: translateY(-1px);
 }
 
@@ -73,8 +75,9 @@ main {
     font-weight: 600;
 }
 
-.calendar {
-    background: var(--card-background);
+/* Simplify card and modal backgrounds */
+.calendar, .exercise-form, .exercise-list, .modal-content, .exercise-details-content {
+    background-color: var(--card-background);
     border-radius: 12px;
     box-shadow: var(--shadow-large);
     padding: 1.5rem;
@@ -86,8 +89,9 @@ main {
     gap: 1.5rem;
 }
 
+/* Simplify day styling */
 .day {
-    background: var(--card-background);
+    background: var(--background-color);
     border-radius: 8px;
     padding: 1.2rem;
     border: 1px solid var(--border-color);
@@ -95,7 +99,7 @@ main {
 }
 
 .day:hover {
-    transform: translateY(-2px);
+    transform: none;
     box-shadow: var(--shadow);
 }
 
@@ -111,27 +115,24 @@ main {
     margin-bottom: 1rem;
 }
 
-.exercise-item {
+/* Remove unnecessary effects from exercise items */
+.exercise-item, .exercise-item:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--background-color);
+    background: transparent;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 0.8rem;
     margin-bottom: 0.8rem;
     transition: all 0.2s ease;
-}
-
-.exercise-item:hover {
-    background: #f0f0f0;
-    transform: translateX(3px);
+    transform: none;
 }
 
 .add-exercise {
     width: 100%;
     padding: 0.8rem;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -141,12 +142,12 @@ main {
 }
 
 .add-exercise:hover {
-    background-color: #2980b9;
+    background-color: var(--accent-color);
     transform: translateY(-1px);
 }
 
 .delete-exercise {
-    background: var(--accent-color);
+    background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -159,7 +160,7 @@ main {
 }
 
 .delete-exercise:hover {
-    background: #c0392b;
+    background: var(--accent-color);
     transform: scale(1.1);
 }
 
@@ -173,7 +174,7 @@ main {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px);
+    backdrop-filter: none;
 }
 
 .modal-content {
@@ -197,25 +198,26 @@ main {
     }
 }
 
+/* Simplify inputs and selects */
 select, input {
     width: 100%;
     padding: 0.8rem;
     margin-bottom: 1rem;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: var(--background-color);
+    background-color: var(--card-background);
     color: var(--text-primary);
     font-size: 1rem;
 }
 
 select:focus, input:focus {
     outline: none;
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.2);
 }
 
 button {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: white;
     border: none;
     padding: 0.8rem 1.5rem;
@@ -226,7 +228,7 @@ button {
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: var(--accent-color);
     transform: translateY(-1px);
 }
 
@@ -279,7 +281,7 @@ button:hover {
 }
 
 .delete-custom-exercise {
-    background: var(--accent-color);
+    background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -292,7 +294,7 @@ button:hover {
 }
 
 .delete-custom-exercise:hover {
-    background: #c0392b;
+    background: var(--accent-color);
     transform: translateY(-1px);
 }
 
@@ -343,7 +345,7 @@ exercise-details-actions button {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: none;
 }
 
 .exercise-details-content {
@@ -383,7 +385,7 @@ exercise-details-actions button {
     align-items: center;
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
+    backdrop-filter: none;
 }
 
 .modal-content, .exercise-details-content {
@@ -404,7 +406,7 @@ exercise-details-actions button {
     align-items: center;
     padding: 0.8rem;
     margin-bottom: 0.8rem;
-    background: var(--background-color);
+    background: transparent;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -416,7 +418,7 @@ exercise-details-actions button {
 
 /* Update these specific styles for the delete button */
 #exercise-list .delete-exercise {
-    background: var(--accent-color);
+    background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -434,7 +436,7 @@ exercise-details-actions button {
 }
 
 #exercise-list .delete-exercise:hover {
-    background: #c0392b;
+    background: var(--accent-color);
     transform: scale(1.1);
 }
 
