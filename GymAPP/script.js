@@ -1,29 +1,13 @@
-// Exercise categories and data
+// All available muscles for selection
 const allMuscles = [
-    'Chest',
-    'Front Delts',
-    'Side Delts',
-    'Rear Delts',
-    'Lats',
-    'Traps',
-    'Rhomboids',
-    'Lower Back',
-    'Biceps',
-    'Triceps',
-    'Forearms',
-    'Abs',
-    'Obliques',
-    'Quads',
-    'Hamstrings',
-    'Glutes',
-    'Calves',
-    'Hip Flexors',
-    'Adductors',
-    'Serratus Anterior',  // Additional muscles that are relevant
-    'Brachialis',
-    'Core Stabilizers'
+    'Chest', 'Front Delts', 'Side Delts', 'Rear Delts', 'Lats',
+    'Traps', 'Rhomboids', 'Lower Back', 'Biceps', 'Triceps',
+    'Forearms', 'Abs', 'Obliques', 'Quads', 'Hamstrings',
+    'Glutes', 'Calves', 'Hip Flexors', 'Adductors',
+    'Serratus Anterior', 'Brachialis', 'Core Stabilizers'
 ];
 
+// Muscle groups for categories
 const muscleGroups = {
     chest: ['Chest', 'Front Delts', 'Serratus Anterior'],
     back: ['Lats', 'Traps', 'Rhomboids', 'Lower Back'],
@@ -33,170 +17,31 @@ const muscleGroups = {
     core: ['Abs', 'Obliques', 'Lower Back', 'Core Stabilizers']
 };
 
-const exercises = {
-    chest: [
-        {
-            name: 'Bench Press',
-            muscles: {
-                primary: ['Chest', 'Front Delts'],
-                secondary: ['Triceps', 'Core Stabilizers']
-            }
-        },
-        {
-            name: 'Incline Press',
-            muscles: {
-                primary: ['Chest', 'Front Delts'],
-                secondary: ['Triceps', 'Serratus Anterior']
-            }
-        },
-        {
-            name: 'Dumbbell Flyes',
-            muscles: {
-                primary: ['Chest'],
-                secondary: ['Front Delts', 'Serratus Anterior']
-            }
-        }
-    ],
-    back: [
-        {
-            name: 'Pull-ups',
-            muscles: {
-                primary: ['Lats', 'Traps'],
-                secondary: ['Biceps', 'Forearms', 'Core Stabilizers']
-            }
-        },
-        {
-            name: 'Rows',
-            muscles: {
-                primary: ['Lats', 'Rhomboids'],
-                secondary: ['Biceps', 'Rear Delts', 'Core Stabilizers']
-            }
-        },
-        {
-            name: 'Deadlift',
-            muscles: {
-                primary: ['Lower Back', 'Glutes'],
-                secondary: ['Hamstrings', 'Traps', 'Forearms', 'Core Stabilizers']
-            }
-        }
-    ],
-    legs: [
-        {
-            name: 'Squats',
-            muscles: {
-                primary: ['Quads', 'Glutes'],
-                secondary: ['Lower Back', 'Core Stabilizers', 'Hamstrings', 'Calves']
-            }
-        },
-        {
-            name: 'Leg Press',
-            muscles: {
-                primary: ['Quads', 'Glutes'],
-                secondary: ['Hamstrings', 'Calves']
-            }
-        },
-        {
-            name: 'Lunges',
-            muscles: {
-                primary: ['Quads', 'Glutes'],
-                secondary: ['Hamstrings', 'Core Stabilizers', 'Calves']
-            }
-        }
-    ],
-    shoulders: [
-        {
-            name: 'Overhead Press',
-            muscles: {
-                primary: ['Front Delts', 'Side Delts'],
-                secondary: ['Triceps', 'Core Stabilizers', 'Upper Chest']
-            }
-        },
-        {
-            name: 'Lateral Raises',
-            muscles: {
-                primary: ['Side Delts'],
-                secondary: ['Traps', 'Front Delts']
-            }
-        },
-        {
-            name: 'Front Raises',
-            muscles: {
-                primary: ['Front Delts'],
-                secondary: ['Upper Chest', 'Core Stabilizers']
-            }
-        }
-    ],
-    arms: [
-        {
-            name: 'Bicep Curls',
-            muscles: {
-                primary: ['Biceps'],
-                secondary: ['Forearms', 'Front Delts']
-            }
-        },
-        {
-            name: 'Tricep Extensions',
-            muscles: {
-                primary: ['Triceps'],
-                secondary: ['Forearms']
-            }
-        },
-        {
-            name: 'Hammer Curls',
-            muscles: {
-                primary: ['Biceps', 'Brachialis'],
-                secondary: ['Forearms']
-            }
-        }
-    ],
-    core: [
-        {
-            name: 'Planks',
-            muscles: {
-                primary: ['Abs', 'Core Stabilizers'],
-                secondary: ['Lower Back', 'Shoulders']
-            }
-        },
-        {
-            name: 'Crunches',
-            muscles: {
-                primary: ['Abs'],
-                secondary: ['Hip Flexors']
-            }
-        },
-        {
-            name: 'Russian Twists',
-            muscles: {
-                primary: ['Abs', 'Obliques'],
-                secondary: ['Hip Flexors', 'Core Stabilizers']
-            }
-        }
-    ]
-};
-
-// Initialize userExercises object
+// Initialize userExercises object and workout data
 let userExercises = {};
+let currentDate = new Date();
+let workoutData = {};
+let currentDay = null;
 
-// Load user exercises from localStorage
+// Load/Save functions for user exercises
 function loadUserExercises() {
     const savedExercises = localStorage.getItem('userExercises');
     userExercises = savedExercises ? JSON.parse(savedExercises) : {};
 }
 
-// Save user exercises to localStorage
 function saveUserExercises() {
     localStorage.setItem('userExercises', JSON.stringify(userExercises));
 }
 
-// Current week data
-let currentDate = new Date();
-let workoutData = {};
+// Load/Save functions for workout data
+function loadWorkoutData() {
+    const saved = localStorage.getItem('workoutData');
+    workoutData = saved ? JSON.parse(saved) : {};
+}
 
-// DOM Elements
-const modal = document.getElementById('exercise-modal');
-const categorySelect = document.getElementById('exercise-category');
-const exerciseSelect = document.getElementById('exercise-select');
-let currentDay = null;
+function saveWorkoutData() {
+    localStorage.setItem('workoutData', JSON.stringify(workoutData));
+}
 
 // Initialize
 function init() {
@@ -204,9 +49,27 @@ function init() {
     loadWorkoutData();
     updateWeekDisplay();
     setupEventListeners();
-    // Remove or comment out initializeExerciseForm();
-    // Remove or adjust renderExerciseList() if necessary
 }
+
+// Update exercise options when category is selected
+function updateExerciseOptions() {
+    const category = categorySelect.value;
+    exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
+
+    if (category && userExercises[category]) {
+        userExercises[category].forEach(exercise => {
+            const option = document.createElement('option');
+            option.value = exercise.name;
+            option.textContent = exercise.name;
+            exerciseSelect.appendChild(option);
+        });
+    }
+}
+
+// DOM Elements
+const modal = document.getElementById('exercise-modal');
+const categorySelect = document.getElementById('exercise-category');
+const exerciseSelect = document.getElementById('exercise-select');
 
 function loadWorkoutData() {
     const saved = localStorage.getItem('workoutData');
@@ -549,27 +412,13 @@ function deleteCustomExercise(exerciseName, category) {
     }
 }
 
-// Modify the renderExerciseList function
+// Update renderExerciseList function
 function renderExerciseList() {
     const exerciseList = document.getElementById('exercise-list');
     if (!exerciseList) return;
     
     exerciseList.innerHTML = '';
     
-    // Display predefined exercises
-    for (const category in exercises) {
-        const exerciseArray = exercises[category];
-        exerciseArray.forEach(exercise => {
-            const div = document.createElement('div');
-            div.className = 'exercise-item';
-            div.innerHTML = `
-                <span>${exercise.name} (${category}) - Built-in</span>
-            `;
-            div.onclick = () => showExerciseDetails(exercise.name, 'built-in', category);
-            exerciseList.appendChild(div);
-        });
-    }
-
     // Display user-added exercises
     for (const category in userExercises) {
         const exerciseArray = userExercises[category];
@@ -577,7 +426,7 @@ function renderExerciseList() {
             const div = document.createElement('div');
             div.className = 'exercise-item';
             div.innerHTML = `
-                <span>${exercise.name} (${category}) - Custom</span>
+                <span>${exercise.name} (${category})</span>
                 <button class="delete-exercise" title="Delete Exercise">×</button>
             `;
             
@@ -607,6 +456,12 @@ function initializeExerciseForm() {
         const category = this.value;
         updateMuscleOptions(category, directMusclesSelect, indirectMusclesSelect);
     });
+
+    // Make sure the add button has the correct event listener
+    const addButton = document.getElementById('add-new-exercise-btn');
+    if (addButton) {
+        addButton.addEventListener('click', addNewExercise);
+    }
 }
 
 // Simplified muscle options update
@@ -615,7 +470,7 @@ function updateMuscleOptions(category, directContainer, indirectContainer) {
     directContainer.innerHTML = '';
     indirectContainer.innerHTML = '';
 
-    // Add primary muscles based on category
+    // Add suggested primary muscles based on category
     if (category && muscleGroups[category]) {
         muscleGroups[category].forEach(muscle => {
             const option = document.createElement('div');
@@ -639,24 +494,23 @@ function updateMuscleOptions(category, directContainer, indirectContainer) {
 }
 
 function toggleMuscleSelection(element) {
-    element.classList.toggle('selected');
+    if (element) {
+        element.classList.toggle('selected');
+    }
 }
 
-// Simplified add new exercise function
+// Update addNewExercise function
 function addNewExercise(event) {
-    event.preventDefault(); // Prevent form submission
+    event.preventDefault();
 
-    // Get form values
     const name = document.getElementById('new-exercise-name').value.trim();
     const category = document.getElementById('new-exercise-category').value;
     
-    // Get selected muscles
     const directMuscles = Array.from(document.querySelectorAll('#direct-muscles .muscle-option.selected'))
         .map(el => el.dataset.muscle);
     const indirectMuscles = Array.from(document.querySelectorAll('#indirect-muscles .muscle-option.selected'))
         .map(el => el.dataset.muscle);
 
-    // Validation
     if (!name || !category) {
         alert('Please enter exercise name and select category');
         return;
@@ -667,7 +521,12 @@ function addNewExercise(event) {
         return;
     }
 
-    // Create new exercise object
+    // Initialize category if it doesn't exist
+    if (!userExercises[category]) {
+        userExercises[category] = [];
+    }
+
+    // Create and add new exercise
     const newExercise = {
         name: name,
         category: category,
@@ -677,12 +536,6 @@ function addNewExercise(event) {
         }
     };
 
-    // Initialize category if it doesn't exist
-    if (!userExercises[category]) {
-        userExercises[category] = [];
-    }
-
-    // Add the exercise
     userExercises[category].push(newExercise);
     
     // Save to localStorage
@@ -695,7 +548,11 @@ function addNewExercise(event) {
         option.classList.remove('selected');
     });
 
-    // Update exercise list
+    // Clear muscle options
+    document.getElementById('direct-muscles').innerHTML = '';
+    document.getElementById('indirect-muscles').innerHTML = '';
+
+    // Update display
     renderExerciseList();
 
     // Show success message
