@@ -90,60 +90,6 @@ main {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-    background: white;
-    width: 80%;
-    max-width: 500px;
-    margin: 100px auto;
-    padding: 2rem;
-    border-radius: 10px;
-}
-
-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: var(--secondary-color);
-}
-
-.add-exercise {
-    width: 100%;
-}
-
-select, input {
-    width: 100%;
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-}
-
-.exercise-details {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    margin: 1rem 0;
-}
-
-/* Add these styles to styles.css */
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
     justify-content: center;
     align-items: center;
 }
@@ -157,100 +103,6 @@ select, input {
     border-radius: 10px;
 }
 
-#exercise-list {
-    max-height: 200px;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-}
-
-#exercise-list div {
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-#exercise-list div:last-child {
-    border-bottom: none;
-}
-
-/* Add these styles to styles.css */
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--background-color);
-}
-
-header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-header h1 {
-    margin: 0;
-    text-align: center;
-}
-
-nav {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.week-selector {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-}
-
-.calendar {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    padding: 1rem;
-}
-
-.week {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
-}
-
-.day {
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    padding: 1rem;
-}
-
-.day h2 {
-    margin: 0 0 1rem 0;
-    color: var(--primary-color);
-    font-size: 1.1rem;
-}
-
-.exercises-list {
-    min-height: 100px;
-    margin-bottom: 1rem;
-}
-
-.exercise-item {
-    background: #f8f8f8;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
 button {
     background-color: var(--primary-color);
     color: white;
@@ -293,8 +145,74 @@ select, input {
 #exercise-list div {
     padding: 0.5rem;
     border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
 }
 
 #exercise-list div:last-child {
     border-bottom: none;
+}
+
+.muscle-selection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+select[multiple] {
+    width: 100%;
+    min-height: 150px;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.direct-muscles, .indirect-muscles {
+    background: white;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+option {
+    padding: 0.25rem;
+}
+
+option:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.exercise-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.exercise-form select,
+.exercise-form input {
+    margin-bottom: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+#add-new-exercise-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.exercise-list {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Exercises</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -15,12 +14,47 @@
         </nav>
     </header>
     <main>
-        <div id="exercise-list"></div>
-        <h3>Add New Exercise</h3>
-        <input type="text" id="new-exercise-name" placeholder="Exercise Name">
-        <input type="text" id="new-exercise-category" placeholder="Category">
-        <input type="text" id="new-exercise-muscles" placeholder="Muscles Worked">
-        <button id="add-new-exercise-btn">Add Exercise</button>
+        <div class="exercise-form">
+            <h3>Add New Exercise</h3>
+            
+            <!-- Category selection first -->
+            <select id="new-exercise-category" required>
+                <option value="">Select Category</option>
+                <option value="chest">Chest</option>
+                <option value="back">Back</option>
+                <option value="legs">Legs</option>
+                <option value="shoulders">Shoulders</option>
+                <option value="arms">Arms</option>
+                <option value="core">Core</option>
+            </select>
+
+            <!-- Exercise name input -->
+            <input type="text" id="new-exercise-name" placeholder="Exercise Name" required>
+            
+            <!-- Muscle selections -->
+            <div class="muscle-selection">
+                <div class="direct-muscles">
+                    <h4>Primary Muscles</h4>
+                    <select id="direct-muscles" multiple size="6">
+                        <!-- Will be populated based on category -->
+                    </select>
+                </div>
+                
+                <div class="indirect-muscles">
+                    <h4>Secondary Muscles</h4>
+                    <select id="indirect-muscles" multiple size="6">
+                        <!-- Will be populated based on category -->
+                    </select>
+                </div>
+            </div>
+            
+            <button id="add-new-exercise-btn">Add Exercise</button>
+        </div>
+
+        <div class="exercise-list">
+            <h3>Current Exercises</h3>
+            <div id="exercise-list"></div>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
