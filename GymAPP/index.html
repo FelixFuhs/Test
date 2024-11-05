@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Training Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Gym Training Tracker</h1>
+        <nav>
+            <button id="manage-exercises">Manage Exercises</button>
+            <button id="save-workout">Save Workout</button>
+            <button id="load-workout">Load Workout</button>
+        </nav>
+    </header>
+    <main>
+        <div class="week-selector">
+            <span id="current-week">Week of January 1, 2024</span>
+        </div>
+        <div class="calendar">
+            <div class="week">
+                <div class="day" data-day="monday">
+                    <h2>Monday</h2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+                <div class="day" data-day="tuesday">
+                    <h2>Tuesday</h2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+                <div class="day" data-day="wednesday">
+                    <h2>Wednesday</h2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+                <div class="day" data-day="thursday">
+                    <h2>Thursday</h2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+                <div class="day" data-day="friday">
+                    <h2>Friday</h2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+                <div class="day" data-day="saturday">
+                    <h2>Saturday</2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+                <div class="day" data-day="sunday">
+                    <h2>Sunday</h2>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                </div>
+            </div>
+        </div>
+        <div class="navigation">
+            <button id="prev-week"><i class="fas fa-chevron-left"></i> Previous Week</button>
+            <button id="next-week">Next Week <i class="fas fa-chevron-right"></i></button>
+        </div>
+    </main>
+
+    <!-- Exercise Modal -->
+    <div id="exercise-modal" class="modal">
+        <div class="modal-content">
+            <h2>Add Exercise</h2>
+            <select id="exercise-category">
+                <option value="">Select Category</option>
+                <option value="chest">Chest</option>
+                <option value="back">Back</option>
+                <option value="legs">Legs</option>
+                <option value="shoulders">Shoulders</option>
+                <option value="arms">Arms</option>
+                <option value="core">Core</option>
+            </select>
+            <select id="exercise-select">
+                <option value="">Select Exercise</option>
+            </select>
+            <div class="exercise-details">
+                <input type="number" id="exercise-sets" placeholder="Sets">
+                <input type="number" id="exercise-reps" placeholder="Reps">
+                <input type="number" id="exercise-weight" placeholder="Weight (kg)">
+            </div>
+            <button id="add-exercise-btn">Add</button>
+            <button id="close-modal">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Manage Exercises Modal -->
+    <div id="manage-exercises-modal" class="modal">
+        <div class="modal-content">
+            <h2>Manage Exercises</h2>
+            <div id="exercise-list"></div>
+            <h3>Add New Exercise</h3>
+            <input type="text" id="new-exercise-name" placeholder="Exercise Name">
+            <input type="text" id="new-exercise-category" placeholder="Category">
+            <input type="text" id="new-exercise-muscles" placeholder="Muscles Worked">
+            <button id="add-new-exercise-btn">Add Exercise</button>
+            <button id="close-manage-exercises-modal">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
