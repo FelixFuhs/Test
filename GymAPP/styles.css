@@ -1,72 +1,109 @@
 :root {
-    --primary-color: #4CAF50;
-    --secondary-color: #45a049;
-    --background-color: #f5f5f5;
-    --border-color: #ddd;
+    --primary-color: #2C3E50;
+    --secondary-color: #3498DB;
+    --accent-color: #E74C3C;
+    --background-color: #F8F9FA;
+    --card-background: #FFFFFF;
+    --text-primary: #2C3E50;
+    --text-secondary: #7F8C8D;
+    --border-color: #E9ECEF;
+    --success-color: #2ECC71;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-large: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
+    color: var(--text-primary);
+    line-height: 1.6;
 }
 
 header {
     background-color: var(--primary-color);
     color: white;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
 }
 
 header h1 {
     margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
     text-align: center;
 }
 
 nav {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-top: 1rem;
+}
+
+nav a, nav button {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    cursor: pointer;
+}
+
+nav a:hover, nav button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
 }
 
 main {
     max-width: 1200px;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
 }
 
 .week-selector {
     text-align: center;
     font-size: 1.2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 .calendar {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    padding: 1rem;
+    background: var(--card-background);
+    border-radius: 12px;
+    box-shadow: var(--shadow-large);
+    padding: 1.5rem;
 }
 
 .week {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .day {
-    background: white;
+    background: var(--card-background);
+    border-radius: 8px;
+    padding: 1.2rem;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
-    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.day:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .day h2 {
     margin: 0 0 1rem 0;
     color: var(--primary-color);
     font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .exercises-list {
@@ -78,35 +115,52 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f8f8f8;
+    background: var(--background-color);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 0.8rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     transition: all 0.2s ease;
 }
 
 .exercise-item:hover {
     background: #f0f0f0;
-    transform: translateX(5px);
+    transform: translateX(3px);
+}
+
+.add-exercise {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.add-exercise:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
 }
 
 .delete-exercise {
-    background: #ff4444;
+    background: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
     text-align: center;
     cursor: pointer;
-    padding: 0;
-    margin-left: 10px;
+    transition: all 0.2s ease;
 }
 
 .delete-exercise:hover {
-    background: #cc0000;
+    background: #c0392b;
+    transform: scale(1.1);
 }
 
 .modal {
@@ -116,184 +170,229 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
-    background: white;
-    width: 80%;
+    background: var(--card-background);
+    width: 90%;
     max-width: 500px;
-    margin: 100px auto;
     padding: 2rem;
-    border-radius: 10px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-large);
+    animation: modalSlideIn 0.3s ease;
 }
 
-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: var(--secondary-color);
-}
-
-.add-exercise {
-    width: 100%;
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 select, input {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.8rem;
     margin-bottom: 1rem;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 6px;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-size: 1rem;
 }
 
-.exercise-details {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    margin: 1rem 0;
+select:focus, input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
-#exercise-list {
-    max-height: 200px;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-}
-
-#exercise-list div {
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
+button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
-#exercise-list div:last-child {
-    border-bottom: none;
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+.exercise-form, .exercise-list {
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
 }
 
 .muscle-selection {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin: 1rem 0;
-}
-
-select[multiple] {
-    width: 100%;
-    min-height: 150px;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: white;
-}
-
-.muscle-selection select[multiple] {
-    height: 200px; /* Make lists taller */
-    padding: 8px;
-    margin-bottom: 0.5rem;
-}
-
-.muscle-selection .helper-text {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 4px;
-    margin-bottom: 8px;
-}
-
-.muscle-selection option {
-    padding: 8px;
-    margin: 2px 0;
-}
-
-.muscle-selection option:checked {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.direct-muscles, .indirect-muscles {
-    background: white;
-    padding: 1rem;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
-}
-
-option {
-    padding: 0.25rem;
-}
-
-option:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-h4 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    color: var(--primary-color);
-}
-
-.exercise-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
-}
-
-.exercise-form select,
-.exercise-form input {
-    margin-bottom: 1rem;
-    width: 100%;
-    padding: 0.5rem;
-}
-
-#add-new-exercise-btn {
-    width: 100%;
-    margin-top: 1rem;
-}
-
-.exercise-list {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
 }
 
 .muscle-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px;
+    gap: 0.5rem;
+    padding: 1rem;
     min-height: 100px;
-    background: #f8f8f8;
+    background: var(--background-color);
+    border-radius: 8px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
 }
 
 .muscle-option {
-    padding: 8px 16px;
-    background: white;
+    padding: 0.5rem 1rem;
+    background: var(--card-background);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
+    font-size: 0.9rem;
 }
 
 .muscle-option.selected {
-    background: var(--primary-color);
+    background: var(--secondary-color);
     color: white;
-    border-color: var(--primary-color);
+    border-color: var(--secondary-color);
 }
 
 .muscle-option:hover {
     background: var(--secondary-color);
     color: white;
+    transform: translateY(-1px);
+}
+
+.delete-custom-exercise {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.delete-custom-exercise:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+
+/* Add these new styles */
+
+#edit-exercise-form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+#edit-exercise-form input,
+#edit-exercise-form select {
+    margin-bottom: 15px;
+}
+
+.exercise-details-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.exercise-details-actions button {
+    flex: 1;
+}
+
+#edit-exercise-btn {
+    background-color: var(--primary-color);
+}
+
+#save-exercise-btn {
+    background-color: #4CAF50;
+}
+
+#edit-exercise-form .muscle-selection {
+    margin-top: 15px;
+}
+
+/* Fix for exercise details modal */
+.exercise-details-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.exercise-details-content {
+    background: var(--card-background);
+    width: 90%;
+    max-width: 500px;
+    margin: 20vh auto; /* Centers vertically at 20% from top */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-large);
+    position: relative; /* Changed from fixed */
+    animation: modalSlideIn 0.3s ease;
+}
+
+.exercise-details-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+    align-items: center;
+}
+
+.exercise-details-label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Add these styles for better modal positioning */
+.modal, .exercise-details-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content, .exercise-details-content {
+    background: var(--card-background);
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-large);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
 }

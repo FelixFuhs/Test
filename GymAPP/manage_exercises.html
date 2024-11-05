@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Exercises</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -58,6 +61,44 @@
             <div id="exercise-list"></div>
         </div>
     </main>
+
+    <!-- Exercise Details Modal -->
+    <div id="exercise-details-modal" class="exercise-details-modal">
+        <div class="exercise-details-content">
+            <h3>Exercise Details</h3>
+            <div id="exercise-details-content" class="exercise-details-grid">
+                <!-- Details will be inserted here -->
+            </div>
+            <div class="exercise-details-actions">
+                <button id="edit-exercise-btn">Edit Exercise</button>
+                <button id="save-exercise-btn" style="display: none;">Save Changes</button>
+                <button id="close-details-modal">Close</button>
+            </div>
+            <!-- Add edit form that will be shown when editing -->
+            <div id="edit-exercise-form" style="display: none;">
+                <input type="text" id="edit-exercise-name" placeholder="Exercise Name">
+                <select id="edit-exercise-category">
+                    <option value="chest">Chest</option>
+                    <option value="back">Back</option>
+                    <option value="legs">Legs</option>
+                    <option value="shoulders">Shoulders</option>
+                    <option value="arms">Arms</option>
+                    <option value="core">Core</option>
+                </select>
+                <div class="muscle-selection">
+                    <div class="direct-muscles">
+                        <h4>Primary Muscles</h4>
+                        <div id="edit-direct-muscles" class="muscle-options"></div>
+                    </div>
+                    <div class="indirect-muscles">
+                        <h4>Secondary Muscles</h4>
+                        <div id="edit-indirect-muscles" class="muscle-options"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
