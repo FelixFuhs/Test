@@ -78,8 +78,15 @@ main {
     background: #f8f8f8;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 0.5rem;
+    padding: 0.8rem;
     margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.exercise-item:hover {
+    background: #f0f0f0;
+    transform: translateX(5px);
 }
 
 .modal {
@@ -168,6 +175,29 @@ select[multiple] {
     background-color: white;
 }
 
+.muscle-selection select[multiple] {
+    height: 200px; /* Make lists taller */
+    padding: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.muscle-selection .helper-text {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+.muscle-selection option {
+    padding: 8px;
+    margin: 2px 0;
+}
+
+.muscle-selection option:checked {
+    background-color: var(--primary-color);
+    color: white;
+}
+
 .direct-muscles, .indirect-muscles {
     background: white;
     padding: 1rem;
@@ -215,4 +245,35 @@ h4 {
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.muscle-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    min-height: 100px;
+    background: #f8f8f8;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.muscle-option {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.muscle-option.selected {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.muscle-option:hover {
+    background: var(--secondary-color);
+    color: white;
 }
