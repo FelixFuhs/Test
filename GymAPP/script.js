@@ -92,7 +92,7 @@ function setupEventListeners() {
     document.querySelectorAll('.add-exercise').forEach(button => {
         button.addEventListener('click', (event) => {
             currentDay = event.target.closest('.day').dataset.day;
-            modal.style.display = 'block';
+            modal.style.display = 'flex'; // Change 'block' to 'flex'
         });
     });
 
@@ -147,30 +147,32 @@ function updateExerciseOptions() {
     }
 }
 
+// Update the addExercise function to include new parameters
 function addExercise() {
     const exercise = exerciseSelect.value;
     const sets = document.getElementById('exercise-sets').value;
-    const reps = document.getElementById('exercise-reps').value;
-    const weight = document.getElementById('exercise-weight').value;
+    const repGoal = document.getElementById('exercise-rep-range').value;
+    const rirGoal = document.getElementById('exercise-rir-range').value;
+    const repeating = document.getElementById('exercise-repeating').checked;
 
-    if (!exercise || !sets || !reps) {
+    if (!exercise || !sets || !repGoal || !rirGoal) {
         alert('Please fill in all required fields');
         return;
     }
 
     const weekKey = getWeekKey();
-    if (!workoutData[weekKey]) {
-        workoutData[weekKey] = {};
-    }
-    if (!workoutData[weekKey][currentDay]) {
-        workoutData[weekKey][currentDay] = [];
-    }
+    if (!workoutData[weekKey]) workoutData[weekKey] = {};
+    if (!workoutData[weekKey][currentDay]) workoutData[weekKey][currentDay] = [];
 
     workoutData[weekKey][currentDay].push({
         exercise,
-        sets,
-        reps,
-        weight
+        sets: parseInt(sets),
+        repGoal,
+        rirGoal,
+        repeating,
+        actualReps: Array(parseInt(sets)).fill(''),
+        actualRIRs: Array(parseInt(sets)).fill(''),
+        weights: Array(parseInt(sets)).fill('')
     });
 
     saveWorkoutData();
@@ -179,12 +181,7 @@ function addExercise() {
     resetModalFields();
 }
 
-function getWeekKey() {
-    const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-    return startOfWeek.toISOString().split('T')[0];
-}
-
+// Update renderWorkouts to use the new layout
 function renderWorkouts() {
     const weekKey = getWeekKey();
     document.querySelectorAll('.day').forEach(dayElement => {
@@ -196,23 +193,119 @@ function renderWorkouts() {
             workoutData[weekKey][day].forEach((exerciseData, index) => {
                 const exerciseItem = document.createElement('div');
                 exerciseItem.className = 'exercise-item';
+
+                // Create header with exercise name and delete button
+                const header = document.createElement('div');
+                header.className = 'exercise-header';
+                header.innerHTML = `
+                    <strong>${exerciseData.exercise}</strong>
+                    <button class="delete-exercise" title="Delete Exercise">&times;</button>
+                `;
+                exerciseItem.appendChild(header);
+
+                // Create exercise details section
+                const details = document.createElement('div');
+                details.className = 'exercise-details';
+                details.innerHTML = `
+                    <div>Sets: ${exerciseData.sets}</div>
+                    <div>Goal Reps: ${exerciseData.repGoal}</div>
+                    <div>Goal RIR: ${exerciseData.rirGoal}</div>
+                `;
+                exerciseItem.appendChild(details);
+
+                // Create sets tracking
+                const setsContainer = document.createElement('div');
+                setsContainer.className = 'sets-container';
                 
-                // Exercise info
-                const exerciseInfo = document.createElement('span');
-                exerciseInfo.textContent = `${exerciseData.exercise} - ${exerciseData.sets} sets x ${exerciseData.reps} reps @ ${exerciseData.weight} kg`;
-                exerciseItem.appendChild(exerciseInfo);
-                
-                // Delete button
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-exercise';
-                deleteBtn.innerHTML = '&times;';
+                for (let i = 0; i < exerciseData.sets; i++) {
+                    const setDiv = document.createElement('div');
+                    setDiv.className = 'set-info';
+                    setDiv.innerHTML = `
+                        <input type="number" class="actual-reps" 
+                            data-day="${day}" data-index="${index}" data-set="${i}"
+                            value="${exerciseData.actualReps[i] || ''}" 
+                            placeholder="Reps">
+                        <input type="number" class="actual-rir"
+                            data-day="${day}" data-index="${index}" data-set="${i}"
+                            value="${exerciseData.actualRIRs[i] || ''}"
+                            placeholder="RIR">
+                        <input type="number" class="actual-weight"
+                            data-day="${day}" data-index="${index}" data-set="${i}"
+                            value="${exerciseData.weights[i] || ''}"
+                            placeholder="kg">
+                    `;
+                    setsContainer.appendChild(setDiv);
+                }
+                exerciseItem.appendChild(setsContainer);
+
+                // Add delete functionality
+                const deleteBtn = header.querySelector('.delete-exercise');
                 deleteBtn.onclick = () => deleteExercise(day, index);
-                exerciseItem.appendChild(deleteBtn);
-                
+
                 exercisesList.appendChild(exerciseItem);
             });
         }
     });
+}
+
+// Save actual progress when inputs change
+function saveActualProgress(event) {
+    const input = event.target;
+    const day = input.dataset.day;
+    const index = input.dataset.index;
+    const set = input.dataset.set;
+    const weekKey = getWeekKey();
+    const exerciseData = workoutData[weekKey][day][index];
+
+    if (input.classList.contains('actual-reps')) {
+        exerciseData.actualReps[set] = input.value;
+    } else if (input.classList.contains('actual-rir')) {
+        exerciseData.actualRIRs[set] = input.value;
+    } else if (input.classList.contains('actual-weight')) {
+        exerciseData.weights[set] = input.value;
+    }
+
+    saveWorkoutData();
+}
+
+// Update changeWeek to copy repeating exercises
+function changeWeek(days) {
+    const oldDate = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + days);
+    const oldWeekKey = getWeekKeyForDate(oldDate);
+    const newWeekKey = getWeekKey();
+
+    if (days !== 0 && workoutData[oldWeekKey]) {
+        workoutData[newWeekKey] = {};
+        Object.keys(workoutData[oldWeekKey]).forEach(day => {
+            const repeatingExercises = workoutData[oldWeekKey][day].filter(ex => ex.repeating);
+            if (repeatingExercises.length > 0) {
+                workoutData[newWeekKey][day] = repeatingExercises.map(ex => ({
+                    ...ex,
+                    actualReps: Array(ex.sets).fill(''),
+                    actualRIRs: Array(ex.sets).fill(''),
+                    weights: Array(ex.sets).fill('')
+                }));
+            }
+        });
+        saveWorkoutData();
+    }
+
+    updateWeekDisplay();
+}
+
+// Helper function to get week key for a specific date
+function getWeekKeyForDate(dateObj) {
+    const date = new Date(dateObj);
+    date.setDate(date.getDate() - date.getDay());
+    return date.toISOString().split('T')[0];
+}
+
+// Modify getWeekKey to use currentDate by default
+function getWeekKey() {
+    const date = new Date(currentDate);
+    date.setDate(date.getDate() - date.getDay());
+    return date.toISOString().split('T')[0];
 }
 
 function deleteExercise(day, index) {
@@ -224,17 +317,14 @@ function deleteExercise(day, index) {
     }
 }
 
+// Adjust resetModalFields to reset new inputs
 function resetModalFields() {
     categorySelect.value = '';
     exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
     document.getElementById('exercise-sets').value = '';
-    document.getElementById('exercise-reps').value = '';
-    document.getElementById('exercise-weight').value = '';
-}
-
-function changeWeek(days) {
-    currentDate.setDate(currentDate.getDate() + days);
-    updateWeekDisplay();
+    document.getElementById('exercise-rep-range').value = '';
+    document.getElementById('exercise-rir-range').value = '';
+    document.getElementById('exercise-repeating').checked = false;
 }
 
 let currentEditingExercise = null;
@@ -615,3 +705,71 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 });
+
+// Ensure loadUserExercises is called during initialization
+function init() {
+    loadUserExercises();
+    loadWorkoutData();
+    updateWeekDisplay();
+    setupEventListeners();
+}
+
+// Modify updateExerciseOptions to include both custom and built-in exercises
+function updateExerciseOptions() {
+    const category = categorySelect.value;
+    exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
+
+    // First add user-created exercises
+    if (category && userExercises[category]) {
+        userExercises[category].forEach(exercise => {
+            const option = document.createElement('option');
+            option.value = exercise.name;
+            option.textContent = `${exercise.name} (Custom)`;
+            exerciseSelect.appendChild(option);
+        });
+    }
+
+    // Then add built-in exercises
+    if (category && exercises[category]) {
+        exercises[category].forEach(exercise => {
+            const option = document.createElement('option');
+            option.value = exercise.name;
+            option.textContent = `${exercise.name} (Built-in)`;
+            exerciseSelect.appendChild(option);
+        });
+    }
+}
+
+// Adjust modal display style when opening to center it
+document.querySelectorAll('.add-exercise').forEach(button => {
+    button.addEventListener('click', (event) => {
+        currentDay = event.target.closest('.day').dataset.day;
+        modal.style.display = 'flex'; // Change 'block' to 'flex'
+    });
+});
+
+// Fix modal display logic
+document.querySelectorAll('.add-exercise').forEach(button => {
+    button.addEventListener('click', (event) => {
+        currentDay = event.target.closest('.day').dataset.day;
+        modal.classList.add('show');
+    });
+});
+
+document.getElementById('close-modal').addEventListener('click', () => {
+    modal.classList.remove('show');
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.classList.remove('show');
+    }
+});
+
+// Reset modal display on page load
+document.addEventListener('DOMContentLoaded', () => {
+    modal.classList.remove('show');
+    // ...rest of your initialization code...
+});
+
+// ...existing code...

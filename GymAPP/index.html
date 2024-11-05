@@ -27,7 +27,9 @@
             <div class="week">
                 <div class="day" data-day="monday">
                     <h2>Monday</h2>
-                    <div class="exercises-list"></div>
+                    <div class="exercises-list">
+                        <!-- Exercise items will display name, goals, and progress inputs -->
+                    </div>
                     <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
                 </div>
                 <div class="day" data-day="tuesday">
@@ -68,6 +70,9 @@
         </div>
     </main>
 
+    <!-- Ensure there's no code that triggers the modal on page load -->
+    <!-- The modal should only appear when an "Add Exercise" button is clicked -->
+
     <!-- Exercise Modal -->
     <div id="exercise-modal" class="modal">
         <div class="modal-content">
@@ -76,19 +81,21 @@
                 <option value="">Select Category</option>
                 <option value="chest">Chest</option>
                 <option value="back">Back</option>
-                <option value="legs">Legs</option>
                 <option value="shoulders">Shoulders</option>
                 <option value="arms">Arms</option>
+                <option value="legs">Legs</option>
                 <option value="core">Core</option>
             </select>
             <select id="exercise-select">
                 <option value="">Select Exercise</option>
             </select>
-            <div class="exercise-details">
-                <input type="number" id="exercise-sets" placeholder="Sets">
-                <input type="number" id="exercise-reps" placeholder="Reps">
-                <input type="number" id="exercise-weight" placeholder="Weight (kg)">
-            </div>
+            <input type="number" id="exercise-sets" placeholder="Number of Sets" min="1" required>
+            <input type="text" id="exercise-rep-range" placeholder="Rep Range (e.g., 8-12)" required>
+            <input type="text" id="exercise-rir-range" placeholder="RIR Range (e.g., 1-2)" required>
+            <label>
+                <input type="checkbox" id="exercise-repeating">
+                Repeat this exercise every week
+            </label>
             <button id="add-exercise-btn">Add</button>
             <button id="close-modal">Cancel</button>
         </div>
