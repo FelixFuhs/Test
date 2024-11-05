@@ -14,7 +14,6 @@ let workoutData = {};
 
 // DOM Elements
 const modal = document.getElementById('exercise-modal');
-const manageExercisesModal = document.getElementById('manage-exercises-modal');
 const categorySelect = document.getElementById('exercise-category');
 const exerciseSelect = document.getElementById('exercise-select');
 let currentDay = null;
@@ -24,7 +23,9 @@ function init() {
     loadWorkoutData();
     updateWeekDisplay();
     setupEventListeners();
-    renderExerciseList();
+    if (document.getElementById('exercise-list')) {
+        renderExerciseList();
+    }
 }
 
 function loadWorkoutData() {
@@ -72,15 +73,9 @@ function setupEventListeners() {
     });
 
     // Manage exercises
-    document.getElementById('manage-exercises').addEventListener('click', () => {
-        manageExercisesModal.style.display = 'block';
-    });
-
-    document.getElementById('close-manage-exercises-modal').addEventListener('click', () => {
-        manageExercisesModal.style.display = 'none';
-    });
-
-    document.getElementById('add-new-exercise-btn').addEventListener('click', addNewExercise);
+    if (document.getElementById('add-new-exercise-btn')) {
+        document.getElementById('add-new-exercise-btn').addEventListener('click', addNewExercise);
+    }
 }
 
 function updateExerciseOptions() {
@@ -174,6 +169,9 @@ function renderExerciseList() {
         exercises[category].forEach(exercise => {
             const exerciseItem = document.createElement('div');
             exerciseItem.textContent = `${exercise} (${category})`;
+            exerciseItem.addEventListener('click', () => {
+                viewExerciseDetails(exercise, category);
+            });
             exerciseList.appendChild(exerciseItem);
         });
     }
@@ -202,6 +200,10 @@ function resetNewExerciseFields() {
     document.getElementById('new-exercise-name').value = '';
     document.getElementById('new-exercise-category').value = '';
     document.getElementById('new-exercise-muscles').value = '';
+}
+
+function viewExerciseDetails(exercise, category) {
+    alert(`Exercise: ${exercise}\nCategory: ${category}\nMuscles Worked: ${exercises[category].muscles || 'N/A'}`);
 }
 
 // Initialize the app

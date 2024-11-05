@@ -11,7 +11,7 @@
     <header>
         <h1>Gym Training Tracker</h1>
         <nav>
-            <button id="manage-exercises">Manage Exercises</button>
+            <a href="manage_exercises.html">Manage Exercises</a>
             <button id="save-workout">Save Workout</button>
             <button id="load-workout">Load Workout</button>
         </nav>
@@ -48,7 +48,7 @@
                     <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
                 </div>
                 <div class="day" data-day="saturday">
-                    <h2>Saturday</2>
+                    <h2>Saturday</h2>
                     <div class="exercises-list"></div>
                     <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
                 </div>
@@ -88,20 +88,6 @@
             </div>
             <button id="add-exercise-btn">Add</button>
             <button id="close-modal">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Manage Exercises Modal -->
-    <div id="manage-exercises-modal" class="modal">
-        <div class="modal-content">
-            <h2>Manage Exercises</h2>
-            <div id="exercise-list"></div>
-            <h3>Add New Exercise</h3>
-            <input type="text" id="new-exercise-name" placeholder="Exercise Name">
-            <input type="text" id="new-exercise-category" placeholder="Category">
-            <input type="text" id="new-exercise-muscles" placeholder="Muscles Worked">
-            <button id="add-new-exercise-btn">Add Exercise</button>
-            <button id="close-manage-exercises-modal">Close</button>
         </div>
     </div>
 
