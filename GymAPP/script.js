@@ -1,3 +1,37 @@
+// Built-in exercises database
+const exercises = {
+    chest: [
+        { name: 'Bench Press', muscles: { primary: ['Chest', 'Front Delts'], secondary: ['Triceps'] } },
+        { name: 'Dumbbell Press', muscles: { primary: ['Chest'], secondary: ['Front Delts', 'Triceps'] } },
+        // Add more exercises as needed
+    ],
+    back: [
+        { name: 'Pull-ups', muscles: { primary: ['Lats'], secondary: ['Biceps', 'Rhomboids'] } },
+        { name: 'Barbell Row', muscles: { primary: ['Lats', 'Rhomboids'], secondary: ['Biceps', 'Rear Delts'] } },
+        // Add more exercises as needed
+    ],
+    shoulders: [
+        { name: 'Overhead Press', muscles: { primary: ['Front Delts'], secondary: ['Side Delts', 'Triceps'] } },
+        { name: 'Lateral Raise', muscles: { primary: ['Side Delts'], secondary: ['Traps'] } },
+        // Add more exercises as needed
+    ],
+    arms: [
+        { name: 'Bicep Curl', muscles: { primary: ['Biceps'], secondary: ['Forearms'] } },
+        { name: 'Tricep Extension', muscles: { primary: ['Triceps'], secondary: [] } },
+        // Add more exercises as needed
+    ],
+    legs: [
+        { name: 'Squat', muscles: { primary: ['Quads', 'Glutes'], secondary: ['Hamstrings', 'Core'] } },
+        { name: 'Deadlift', muscles: { primary: ['Hamstrings', 'Glutes'], secondary: ['Lower Back', 'Quads'] } },
+        // Add more exercises as needed
+    ],
+    core: [
+        { name: 'Plank', muscles: { primary: ['Core'], secondary: ['Shoulders'] } },
+        { name: 'Crunch', muscles: { primary: ['Abs'], secondary: ['Hip Flexors'] } },
+        // Add more exercises as needed
+    ]
+};
+
 // All available muscles for selection
 const allMuscles = [
     'Chest', 'Front Delts', 'Side Delts', 'Rear Delts', 'Lats',
@@ -17,23 +51,38 @@ const muscleGroups = {
     core: ['Abs', 'Obliques', 'Lower Back', 'Core Stabilizers']
 };
 
-// Initialize userExercises object and workout data
+// Global state management
 let userExercises = {};
-let currentDate = new Date();
 let workoutData = {};
+let currentDate = new Date();
 let currentDay = null;
 
-// Load/Save functions for user exercises
+// Storage functions
 function loadUserExercises() {
-    const savedExercises = localStorage.getItem('userExercises');
-    userExercises = savedExercises ? JSON.parse(savedExercises) : {};
+    const saved = localStorage.getItem('userExercises');
+    if (saved) {
+        userExercises = JSON.parse(saved);
+    } else {
+        // Initialize with default exercises
+        userExercises = {
+            chest: [
+                { name: 'Bench Press', category: 'chest', muscles: { primary: ['Chest', 'Front Delts'], secondary: ['Triceps'] } },
+                { name: 'Dumbbell Press', category: 'chest', muscles: { primary: ['Chest'], secondary: ['Front Delts', 'Triceps'] } }
+            ],
+            back: [
+                { name: 'Pull-ups', category: 'back', muscles: { primary: ['Lats'], secondary: ['Biceps', 'Rhomboids'] } },
+                { name: 'Barbell Row', category: 'back', muscles: { primary: ['Lats', 'Rhomboids'], secondary: ['Biceps', 'Rear Delts'] } }
+            ],
+            // ... add other default exercises as needed
+        };
+        saveUserExercises(); // Save initial exercises
+    }
 }
 
 function saveUserExercises() {
     localStorage.setItem('userExercises', JSON.stringify(userExercises));
 }
 
-// Load/Save functions for workout data
 function loadWorkoutData() {
     const saved = localStorage.getItem('workoutData');
     workoutData = saved ? JSON.parse(saved) : {};
@@ -43,13 +92,179 @@ function saveWorkoutData() {
     localStorage.setItem('workoutData', JSON.stringify(workoutData));
 }
 
-// Initialize
-function init() {
-    loadUserExercises();
-    loadWorkoutData();
-    updateWeekDisplay();
-    setupEventListeners();
+// Week management
+function getWeekKey(date = currentDate) {
+    const d = new Date(date);
+    d.setDate(d.getDate() - d.getDay());
+    return d.toISOString().split('T')[0];
 }
+
+function changeWeek(days) {
+    const oldDate = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + days);
+    const oldWeekKey = getWeekKey(oldDate);
+    const newWeekKey = getWeekKey();
+
+    // Copy repeating exercises to new week
+    if (days !== 0 && workoutData[oldWeekKey]) {
+        if (!workoutData[newWeekKey]) {
+            workoutData[newWeekKey] = {};
+        }
+        Object.keys(workoutData[oldWeekKey]).forEach(day => {
+            const repeatingExercises = workoutData[oldWeekKey][day]?.filter(ex => ex.repeating) || [];
+            if (repeatingExercises.length > 0) {
+                if (!workoutData[newWeekKey][day]) {
+                    workoutData[newWeekKey][day] = [];
+                }
+                repeatingExercises.forEach(ex => {
+                    workoutData[newWeekKey][day].push({
+                        ...ex,
+                        actualReps: Array(ex.sets).fill(''),
+                        actualRIRs: Array(ex.sets).fill(''),
+                        weights: Array(ex.sets).fill('')
+                    });
+                });
+            }
+        });
+        saveWorkoutData();
+    }
+
+    updateWeekDisplay();
+}
+
+function updateWeekDisplay() {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-week').textContent = 
+        `Week of ${currentDate.toLocaleDateString(undefined, options)}`;
+    renderWorkouts();
+}
+
+// Exercise management
+function addExercise() {
+    const exerciseData = {
+        exercise: exerciseSelect.value,
+        sets: parseInt(document.getElementById('exercise-sets').value),
+        repGoal: document.getElementById('exercise-rep-range').value,
+        rirGoal: document.getElementById('exercise-rir-range').value,
+        repeating: document.getElementById('exercise-repeating').checked,
+        actualReps: Array(parseInt(document.getElementById('exercise-sets').value)).fill(''),
+        actualRIRs: Array(parseInt(document.getElementById('exercise-sets').value)).fill(''),
+        weights: Array(parseInt(document.getElementById('exercise-sets').value)).fill('')
+    };
+
+    if (!exerciseData.exercise || !exerciseData.sets || !exerciseData.repGoal || !exerciseData.rirGoal) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    const weekKey = getWeekKey();
+    if (!workoutData[weekKey]) workoutData[weekKey] = {};
+    if (!workoutData[weekKey][currentDay]) workoutData[weekKey][currentDay] = [];
+
+    workoutData[weekKey][currentDay].push(exerciseData);
+    saveWorkoutData();
+    renderWorkouts();
+    closeModal();
+}
+
+function deleteExercise(day, index) {
+    const weekKey = getWeekKey();
+    if (confirm('Are you sure you want to delete this exercise?')) {
+        workoutData[weekKey][day].splice(index, 1);
+        saveWorkoutData();
+        renderWorkouts();
+    }
+}
+
+// Modal management
+function openModal(day) {
+    currentDay = day;
+    resetModalFields();
+    document.getElementById('exercise-modal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('exercise-modal').classList.remove('show');
+    resetModalFields();
+}
+
+function resetModalFields() {
+    categorySelect.value = '';
+    exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
+    document.getElementById('exercise-sets').value = '';
+    document.getElementById('exercise-rep-range').value = '';
+    document.getElementById('exercise-rir-range').value = '';
+    document.getElementById('exercise-repeating').checked = false;
+}
+
+// Event listeners and initialization
+function setupEventListeners() {
+    // Add exercise buttons
+    document.querySelectorAll('.add-exercise').forEach(button => {
+        button.addEventListener('click', (e) => {
+            openModal(e.target.closest('.day').dataset.day);
+        });
+    });
+
+    // Modal controls
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    document.getElementById('add-exercise-btn').addEventListener('click', addExercise);
+    
+    // Category selection
+    categorySelect.addEventListener('change', updateExerciseOptions);
+
+    // Week navigation
+    document.getElementById('prev-week').addEventListener('click', () => changeWeek(-7));
+    document.getElementById('next-week').addEventListener('click', () => changeWeek(7));
+
+    // Save/Load workout buttons
+    document.getElementById('save-workout')?.addEventListener('click', () => {
+        const weekKey = getWeekKey();
+        const workout = workoutData[weekKey];
+        const blob = new Blob([JSON.stringify(workout, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `workout-${weekKey}.json`;
+        a.click();
+    });
+
+    document.getElementById('load-workout')?.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const weekKey = getWeekKey();
+                workoutData[weekKey] = JSON.parse(event.target.result);
+                saveWorkoutData();
+                renderWorkouts();
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    });
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.endsWith('manage_exercises.html')) {
+        loadUserExercises();
+        initializeExerciseForm();
+        renderExerciseList();
+        setupEditMode();
+    } else {
+        loadUserExercises();
+        loadWorkoutData();
+        updateWeekDisplay();
+        setupEventListeners();
+    }
+});
+
+// Keep all other existing functions (renderWorkouts, exercise management, etc.)
+// ... (rest of your existing code)
 
 // Update exercise options when category is selected
 function updateExerciseOptions() {
@@ -118,32 +333,6 @@ function setupEventListeners() {
     // Manage exercises
     if (document.getElementById('add-new-exercise-btn')) {
         document.getElementById('add-new-exercise-btn').addEventListener('click', addNewExercise);
-    }
-}
-
-// Modify updateExerciseOptions to include userExercises
-function updateExerciseOptions() {
-    const category = categorySelect.value;
-    exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
-
-    // First add built-in exercises
-    if (category && exercises[category]) {
-        exercises[category].forEach(exercise => {
-            const option = document.createElement('option');
-            option.value = exercise.name;
-            option.textContent = `${exercise.name} (Built-in)`;
-            exerciseSelect.appendChild(option);
-        });
-    }
-
-    // Then add user-created exercises
-    if (category && userExercises[category]) {
-        userExercises[category].forEach(exercise => {
-            const option = document.createElement('option');
-            option.value = exercise.name;
-            option.textContent = `${exercise.name} (Custom)`;
-            exerciseSelect.appendChild(option);
-        });
     }
 }
 
@@ -336,26 +525,10 @@ function showExerciseDetails(exercise, type, category) {
     const editButton = document.getElementById('edit-exercise-btn');
     const saveButton = document.getElementById('save-exercise-btn');
     
-    let exerciseData;
-    if (type === 'custom') {
-        exerciseData = userExercises[category].find(e => e.name === exercise);
-    } else {
-        // Fix: Get the correct exercise data from the exercises object
-        exerciseData = exercises[category].find(e => e.name === exercise);
-        if (!exerciseData) {
-            exerciseData = {
-                name: exercise,
-                category: category,
-                muscles: {
-                    primary: [],
-                    secondary: []
-                },
-                type: 'built-in'
-            };
-        }
-    }
+    const exerciseData = userExercises[category].find(e => e.name === exercise);
+    if (!exerciseData) return;
 
-    currentEditingExercise = { ...exerciseData, originalType: type, originalCategory: category };
+    currentEditingExercise = { ...exerciseData, originalCategory: category };
 
     detailsContent.innerHTML = `
         <div class="exercise-details-label">Name:</div>
@@ -528,7 +701,7 @@ function renderExerciseList() {
             };
             
             // Show details when clicking on the exercise name
-            div.querySelector('span').onclick = () => showExerciseDetails(exercise.name, 'custom', category);
+            div.querySelector('span').onclick = () => showExerciseDetails(exercise.name, category);
             
             exerciseList.appendChild(div);
         });
@@ -719,22 +892,11 @@ function updateExerciseOptions() {
     const category = categorySelect.value;
     exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
 
-    // First add user-created exercises
     if (category && userExercises[category]) {
         userExercises[category].forEach(exercise => {
             const option = document.createElement('option');
             option.value = exercise.name;
-            option.textContent = `${exercise.name} (Custom)`;
-            exerciseSelect.appendChild(option);
-        });
-    }
-
-    // Then add built-in exercises
-    if (category && exercises[category]) {
-        exercises[category].forEach(exercise => {
-            const option = document.createElement('option');
-            option.value = exercise.name;
-            option.textContent = `${exercise.name} (Built-in)`;
+            option.textContent = exercise.name;
             exerciseSelect.appendChild(option);
         });
     }
