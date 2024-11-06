@@ -557,3 +557,61 @@ exercise-details-actions button {
     cursor: pointer;
     margin-left: 10px;
 }
+
+#exercise-list .exercise-item {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+#exercise-list .exercise-item:hover {
+    background: var(--background-color);
+    transform: translateY(-1px);
+}
+
+#exercise-list .exercise-item span {
+    flex: 1;
+    padding: 0.5rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.close-modal {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 1001;
+}

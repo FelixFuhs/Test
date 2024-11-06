@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your gym workouts with this weekly training planner">
+    <meta name="theme-color" content="#333333">
     <title>Gym Training Tracker</title>
+    <!-- Preload critical assets -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,93 +22,147 @@
     <header>
         <h1>Gym Training Tracker</h1>
         <nav>
-            <a href="manage_exercises.html">Manage Exercises</a>
-            <button id="save-workout">Save Workout</button>
-            <button id="load-workout">Load Workout</button>
+            <a href="manage_exercises.html" class="nav-link">
+                <i class="fas fa-dumbbell"></i> Manage Exercises
+            </a>
+            <div class="nav-actions">
+                <button id="save-workout" class="nav-button">
+                    <i class="fas fa-save"></i> Save Workout
+                </button>
+                <button id="load-workout" class="nav-button">
+                    <i class="fas fa-upload"></i> Load Workout
+                </button>
+            </div>
         </nav>
     </header>
+
     <main>
         <div class="week-selector">
+            <button id="prev-week" class="week-nav-button" aria-label="Previous Week">
+                <i class="fas fa-chevron-left"></i>
+            </button>
             <span id="current-week">Week of January 1, 2024</span>
+            <button id="next-week" class="week-nav-button" aria-label="Next Week">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
+
         <div class="calendar">
             <div class="week">
+                <!-- Days of the week -->
                 <div class="day" data-day="monday">
                     <h2>Monday</h2>
-                    <div class="exercises-list">
-                        <!-- Exercise items will display name, goals, and progress inputs -->
-                    </div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <div class="exercises-list"></div>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
                 <div class="day" data-day="tuesday">
                     <h2>Tuesday</h2>
                     <div class="exercises-list"></div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
                 <div class="day" data-day="wednesday">
                     <h2>Wednesday</h2>
                     <div class="exercises-list"></div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
                 <div class="day" data-day="thursday">
                     <h2>Thursday</h2>
                     <div class="exercises-list"></div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
                 <div class="day" data-day="friday">
                     <h2>Friday</h2>
                     <div class="exercises-list"></div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
                 <div class="day" data-day="saturday">
                     <h2>Saturday</h2>
                     <div class="exercises-list"></div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
                 <div class="day" data-day="sunday">
                     <h2>Sunday</h2>
                     <div class="exercises-list"></div>
-                    <button class="add-exercise"><i class="fas fa-plus"></i> Add Exercise</button>
+                    <button class="add-exercise" aria-label="Add Exercise">
+                        <i class="fas fa-plus"></i> Add Exercise
+                    </button>
                 </div>
             </div>
         </div>
-        <div class="navigation">
-            <button id="prev-week"><i class="fas fa-chevron-left"></i> Previous Week</button>
-            <button id="next-week">Next Week <i class="fas fa-chevron-right"></i></button>
-        </div>
     </main>
 
-    <!-- Ensure there's no code that triggers the modal on page load -->
-    <!-- The modal should only appear when an "Add Exercise" button is clicked -->
-
     <!-- Exercise Modal -->
-    <div id="exercise-modal" class="modal">
+    <div id="exercise-modal" class="modal" role="dialog" aria-labelledby="modal-title">
         <div class="modal-content">
-            <h2>Add Exercise</h2>
-            <select id="exercise-category">
-                <option value="">Select Category</option>
-                <option value="chest">Chest</option>
-                <option value="back">Back</option>
-                <option value="shoulders">Shoulders</option>
-                <option value="arms">Arms</option>
-                <option value="legs">Legs</option>
-                <option value="core">Core</option>
-            </select>
-            <select id="exercise-select">
-                <option value="">Select Exercise</option>
-            </select>
-            <input type="number" id="exercise-sets" placeholder="Number of Sets" min="1" required>
-            <input type="text" id="exercise-rep-range" placeholder="Rep Range (e.g., 8-12)" required>
-            <input type="text" id="exercise-rir-range" placeholder="RIR Range (e.g., 1-2)" required>
-            <label>
-                <input type="checkbox" id="exercise-repeating">
-                Repeat this exercise every week
-            </label>
-            <button id="add-exercise-btn">Add</button>
-            <button id="close-modal">Cancel</button>
+            <h2 id="modal-title">Add Exercise</h2>
+            <form id="exercise-form" novalidate>
+                <select id="exercise-category" required>
+                    <option value="">Select Category</option>
+                    <option value="chest">Chest</option>
+                    <option value="back">Back</option>
+                    <option value="shoulders">Shoulders</option>
+                    <option value="arms">Arms</option>
+                    <option value="legs">Legs</option>
+                    <option value="core">Core</option>
+                </select>
+                
+                <select id="exercise-select" required>
+                    <option value="">Select Exercise</option>
+                </select>
+
+                <div class="form-group">
+                    <input type="number" id="exercise-sets" min="1" max="20" required
+                           placeholder="Number of Sets">
+                    <span class="input-hint">1-20 sets</span>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="exercise-rep-range" 
+                           pattern="\d{1,2}-\d{1,2}" required
+                           placeholder="Rep Range (e.g., 8-12)">
+                    <span class="input-hint">Format: min-max (e.g., 8-12)</span>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="exercise-rir-range"
+                           pattern="\d{1,2}-\d{1,2}" required
+                           placeholder="RIR Range (e.g., 1-2)">
+                    <span class="input-hint">Format: min-max (e.g., 1-2)</span>
+                </div>
+
+                <label class="checkbox-container">
+                    <input type="checkbox" id="exercise-repeating">
+                    <span class="checkbox-text">Repeat this exercise every week</span>
+                </label>
+
+                <div class="modal-actions">
+                    <button type="submit" id="add-exercise-btn" class="primary-button">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                    <button type="button" id="close-modal" class="secondary-button">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <button id="close-modal" class="close-modal" type="button">&times;</button>
+    <button id="close-details-modal" class="close-modal" type="button">&times;</button>
+
+    <!-- Include script.js -->
+    <script src="script.js" defer></script>
 </body>
 </html>
