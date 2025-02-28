@@ -10,6 +10,10 @@ import {
     initManageExercises
 } from './ui.js';
 
+// Import the new modules
+import { initPlanner } from './planner.js';
+import { initLogger } from './logger.js';
+
 // Check which page is currently loaded
 function getCurrentPage() {
     const path = window.location.pathname;
@@ -29,9 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Current page:", currentPage);
 
         if (currentPage === 'index.html' || currentPage === '' || currentPage === '/') {
-            // Initialize main workout page
-            console.log("Initializing main workout page");
-            initUI();
+            // Initialize the training log page (index.html is now the training log)
+            console.log("Initializing training log page");
+            initLogger();
+        } else if (currentPage === 'workout_planner.html') {
+            // Initialize workout planner page
+            console.log("Initializing workout planner page");
+            initPlanner();
         } else if (currentPage === 'manage_exercises.html') {
             // Initialize manage exercises page
             console.log("Initializing manage exercises page");

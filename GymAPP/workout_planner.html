@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Planner - Gym Training Tracker</title>
+    <meta name="description" content="Create and manage your workout templates">
+    <meta name="theme-color" content="#333333">
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="data.js" as="script">
+    <link rel="preload" href="ui.js" as="script">
+    <link rel="preload" href="main.js" as="script">
+    <link rel="preload" href="planner.js" as="script">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Workout Planner</h1>
+        <nav>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i> Training Log
+            </a>
+            <a href="manage_exercises.html" class="nav-link">
+                <i class="fas fa-dumbbell"></i> Manage Exercises
+            </a>
+            <div class="nav-actions">
+                <button id="create-plan" class="nav-button">
+                    <i class="fas fa-plus"></i> New Plan
+                </button>
+                <button id="save-plan" class="nav-button">
+                    <i class="fas fa-save"></i> Save Plans
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="planner-container">
+            <div class="plans-sidebar">
+                <div class="section-header">
+                    <h2>My Plans</h2>
+                    <p class="helper-text">Select a plan to edit or create a new one</p>
+                </div>
+                <div id="plans-list" class="plans-list">
+                    <!-- Plans will be listed here -->
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list empty-icon"></i>
+                        <p>No workout plans yet</p>
+                        <p>Click "New Plan" to create one</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-editor" id="plan-editor">
+                <div id="no-plan-selected" class="empty-state">
+                    <i class="fas fa-clipboard empty-icon"></i>
+                    <p>Select a plan to edit or create a new one</p>
+                </div>
+
+                <div id="plan-details" class="plan-details" style="display: none;">
+                    <div class="plan-header">
+                        <div class="form-group">
+                            <label for="plan-name">Plan Name</label>
+                            <input type="text" id="plan-name" placeholder="e.g., 5-Day Split, PPL Routine">
+                        </div>
+                        <div class="form-group">
+                            <label for="plan-description">Description (Optional)</label>
+                            <textarea id="plan-description" rows="2" placeholder="Brief description of your workout plan"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="plan-structure">
+                        <div class="section-header">
+                            <h3>Week Structure</h3>
+                            <p class="helper-text">Design your weekly workout plan</p>
+                        </div>
+                        
+                        <div class="week-tabs">
+                            <div class="tab active" data-day="monday">Mon</div>
+                            <div class="tab" data-day="tuesday">Tue</div>
+                            <div class="tab" data-day="wednesday">Wed</div>
+                            <div class="tab" data-day="thursday">Thu</div>
+                            <div class="tab" data-day="friday">Fri</div>
+                            <div class="tab" data-day="saturday">Sat</div>
+                            <div class="tab" data-day="sunday">Sun</div>
+                        </div>
+
+                        <div id="day-editor" class="day-editor">
+                            <div class="day-header">
+                                <h4 id="current-day-name">Monday</h4>
+                                <div class="day-actions">
+                                    <div class="form-group">
+                                        <label for="day-type">Day Type</label>
+                                        <select id="day-type">
+                                            <option value="training">Training Day</option>
+                                            <option value="rest">Rest Day</option>
+                                            <option value="active-recovery">Active Recovery</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="day-name">Custom Name (Optional)</label>
+                                        <input type="text" id="day-name" placeholder="e.g., Push Day, Leg Day">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="training-day-content" class="training-day-content">
+                                <div class="exercises-header">
+                                    <h4>Exercises</h4>
+                                    <button id="add-exercise-to-plan" class="add-button">
+                                        <i class="fas fa-plus"></i> Add Exercise
+                                    </button>
+                                </div>
+
+                                <div id="plan-exercises-list" class="plan-exercises-list">
+                                    <!-- Exercises will be listed here -->
+                                    <div class="empty-state small">
+                                        <p>No exercises added yet</p>
+                                        <p>Click "Add Exercise" to add exercises to this day</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="rest-day-content" class="rest-day-content" style="display: none;">
+                                <div class="empty-state small">
+                                    <i class="fas fa-bed empty-icon"></i>
+                                    <p>Rest Day</p>
+                                    <p>Take time to recover and let your muscles rebuild</p>
+                                </div>
+                            </div>
+
+                            <div id="active-recovery-content" class="active-recovery-content" style="display: none;">
+                                <div class="form-group">
+                                    <label for="recovery-activity">Recovery Activity</label>
+                                    <input type="text" id="recovery-activity" placeholder="e.g., Light Cardio, Yoga, Stretching">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recovery-duration">Duration (minutes)</label>
+                                    <input type="number" id="recovery-duration" min="5" max="180" step="5" value="30">
+                                </div>
+                                <div class="form-group">
+                                    <label for="recovery-notes">Notes (Optional)</label>
+                                    <textarea id="recovery-notes" rows="2" placeholder="Additional notes about recovery"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="muscle-volume-analysis">
+                        <div class="section-header">
+                            <h3>Volume Analysis</h3>
+                            <p class="helper-text">Weekly training volume by muscle group</p>
+                        </div>
+                        <div id="volume-chart" class="volume-chart">
+                            <!-- Volume visualization will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Plan Exercise Modal -->
+    <div id="plan-exercise-modal" class="modal" role="dialog" aria-labelledby="plan-modal-title" aria-modal="true">
+        <div class="modal-content">
+            <h2 id="plan-modal-title">Add Exercise to Plan</h2>
+            <form id="plan-exercise-form" novalidate>
+                <label for="plan-exercise-category">Category:</label>
+                <select id="plan-exercise-category" required>
+                    <option value="">Select Category</option>
+                    <option value="chest">Chest</option>
+                    <option value="back">Back</option>
+                    <option value="shoulders">Shoulders</option>
+                    <option value="arms">Arms</option>
+                    <option value="legs">Legs</option>
+                    <option value="core">Core</option>
+                </select>
+
+                <label for="plan-exercise-select">Exercise:</label>
+                <select id="plan-exercise-select" required>
+                    <option value="">Select Exercise</option>
+                </select>
+
+                <div class="form-group">
+                    <label for="plan-exercise-sets">Number of Sets:</label>
+                    <input type="number" id="plan-exercise-sets" min="1" max="20" required placeholder="e.g., 3">
+                    <span class="input-hint">1-20 sets</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="plan-exercise-rep-range">Rep Range:</label>
+                    <input type="text" id="plan-exercise-rep-range" pattern="\d{1,2}-\d{1,2}" required placeholder="e.g., 8-12">
+                    <span class="input-hint">Format: min-max (e.g., 8-12)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="plan-exercise-rir-range">RIR Range:</label>
+                    <input type="text" id="plan-exercise-rir-range" pattern="\d{1,2}-\d{1,2}" required placeholder="e.g., 1-2">
+                    <span class="input-hint">Format: min-max (e.g., 1-2)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="plan-exercise-rest">Rest Between Sets (seconds):</label>
+                    <input type="number" id="plan-exercise-rest" min="15" max="600" step="15" value="90">
+                    <span class="input-hint">15-600 seconds</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="plan-exercise-notes">Notes (Optional):</label>
+                    <textarea id="plan-exercise-notes" rows="2" placeholder="E.g., Focus on slow eccentric"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" id="add-plan-exercise-btn" class="primary-button">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                    <button type="button" id="close-plan-modal" class="secondary-button">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="data.js"></script>
+    <script type="module" src="ui.js"></script>
+    <script type="module" src="main.js"></script>
+    <script type="module" src="planner.js"></script>
+</body>
+</html>

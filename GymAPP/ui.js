@@ -365,8 +365,43 @@ export function initManageExercises() {
     console.log("Initializing Manage Exercises page...");
     loadUserExercises();
     initializeDefaultExercises();
+    
+    const newCategorySelect = document.getElementById('new-exercise-category');
+    if (newCategorySelect) {
+        newCategorySelect.addEventListener('change', () => {
+            updateMuscleOptions(newCategorySelect.value, 'direct-muscles', 'indirect-muscles');
+        });
+    }
+    
+    const newExerciseForm = document.getElementById('new-exercise-form');
+    if (newExerciseForm) {
+        newExerciseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            addNewExercise();
+        });
+    }
+    
+    const filterCategorySelect = document.getElementById('filter-category');
+    if (filterCategorySelect) {
+        filterCategorySelect.addEventListener('change', renderExerciseList);
+    }
+    
+    const closeDetailsBtn = document.getElementById('close-details-modal');
+    if (closeDetailsBtn) {
+        closeDetailsBtn.addEventListener('click', closeDetailsModal);
+    }
+    
+    const editExerciseBtn = document.getElementById('edit-exercise-btn');
+    if (editExerciseBtn) {
+        editExerciseBtn.addEventListener('click', enableEditMode);
+    }
+    
+    const saveExerciseBtn = document.getElementById('save-exercise-btn');
+    if (saveExerciseBtn) {
+        saveExerciseBtn.addEventListener('click', saveExerciseChanges);
+    }
+    
     renderExerciseList();
-    setupManageEventListeners();
     console.log("Manage Exercises page initialized with exercises:", userExercises);
 }
 
@@ -383,11 +418,14 @@ export function renderExerciseList() {
     categories.forEach(category => {
         if (!userExercises[category]) return;
         
-        const categorySection = document.createElement('div');
-        categorySection.classList.add('category-section');
-        categorySection.innerHTML = `<h3>${category.charAt(0).toUpperCase() + category.slice(1)}</h3>`;
+        const exercises = userExercises[category];
+        if (exercises.length === 0) return;
+        
+        const categoryHeader = document.createElement('h3');
+        categoryHeader.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        exerciseList.appendChild(categoryHeader);
 
-        userExercises[category].forEach(exercise => {
+        exercises.forEach(exercise => {
             const exerciseItem = document.createElement('div');
             exerciseItem.classList.add('exercise-item');
             exerciseItem.dataset.category = category;
@@ -405,12 +443,8 @@ export function renderExerciseList() {
                 </div>
             `;
             
-            categorySection.appendChild(exerciseItem);
+            exerciseList.appendChild(exerciseItem);
         });
-
-        if (userExercises[category].length > 0) {
-            exerciseList.appendChild(categorySection);
-        }
     });
 
     // Add event listeners to the dynamically created buttons
@@ -431,48 +465,6 @@ export function renderExerciseList() {
             deleteUserExercise(name, category);
         });
     });
-}
-
-function setupManageEventListeners() {
-    const newExerciseForm = document.getElementById('new-exercise-form');
-    const newCategorySelect = document.getElementById('new-exercise-category');
-    const filterCategorySelect = document.getElementById('filter-category');
-    
-    if (newExerciseForm) {
-        newExerciseForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            addNewExercise();
-        });
-    }
-    
-    if (newCategorySelect) {
-        newCategorySelect.addEventListener('change', () => {
-            updateMuscleOptions(
-                newCategorySelect.value, 
-                'direct-muscles', 
-                'indirect-muscles'
-            );
-        });
-    }
-
-    if (filterCategorySelect) {
-        filterCategorySelect.addEventListener('change', renderExerciseList);
-    }
-
-    const closeDetailsBtn = document.getElementById('close-details-modal');
-    if (closeDetailsBtn) {
-        closeDetailsBtn.addEventListener('click', closeDetailsModal);
-    }
-
-    const editExerciseBtn = document.getElementById('edit-exercise-btn');
-    if (editExerciseBtn) {
-        editExerciseBtn.addEventListener('click', enableEditMode);
-    }
-
-    const saveExerciseBtn = document.getElementById('save-exercise-btn');
-    if (saveExerciseBtn) {
-        saveExerciseBtn.addEventListener('click', saveExerciseChanges);
-    }
 }
 
 // Function to view exercise details
@@ -497,6 +489,16 @@ export function viewExerciseDetails(exerciseName, category) {
     
     document.getElementById('detail-direct-muscles').textContent = primaryMuscles.join(', ') || 'None';
     document.getElementById('detail-indirect-muscles').textContent = secondaryMuscles.join(', ') || 'None';
+    
+    const editButton = document.getElementById('edit-exercise-btn');
+    const saveButton = document.getElementById('save-exercise-btn');
+    const detailsContent = document.getElementById('exercise-details-content');
+    const editForm = document.getElementById('edit-exercise-form');
+    
+    if (editButton) editButton.style.display = 'inline-block';
+    if (saveButton) saveButton.style.display = 'none';
+    if (editForm) editForm.style.display = 'none';
+    if (detailsContent) detailsContent.style.display = 'grid';
     
     modal.classList.add('show');
 }
@@ -545,13 +547,13 @@ function enableEditMode() {
             const indirectMuscles = currentEditingExercise.indirectMuscles || currentEditingExercise.secondary || [];
             
             directMuscles.forEach(muscle => {
-                const muscleElement = document.querySelector(`#edit-direct-muscles [data-muscle="${muscle}"]`);
-                if (muscleElement) muscleElement.classList.add('selected');
+                const muscleOption = document.querySelector(`#edit-direct-muscles .muscle-option[data-muscle="${muscle}"]`);
+                if (muscleOption) muscleOption.classList.add('selected');
             });
             
             indirectMuscles.forEach(muscle => {
-                const muscleElement = document.querySelector(`#edit-indirect-muscles [data-muscle="${muscle}"]`);
-                if (muscleElement) muscleElement.classList.add('selected');
+                const muscleOption = document.querySelector(`#edit-indirect-muscles .muscle-option[data-muscle="${muscle}"]`);
+                if (muscleOption) muscleOption.classList.add('selected');
             });
         }, 50);
     }
@@ -698,8 +700,12 @@ function updateMuscleOptions(category, directContainerId, indirectContainerId) {
     directContainer.innerHTML = '';
     indirectContainer.innerHTML = '';
 
+    console.log("Updating muscle options for category:", category);
+    console.log("Available muscle groups:", muscleGroups);
+
     // Get muscles relevant to the selected category
     const relevantMuscles = muscleGroups[category] || [];
+    console.log("Relevant muscles for category:", relevantMuscles);
     
     // Add muscle options to direct muscles container
     relevantMuscles.forEach(muscle => {
