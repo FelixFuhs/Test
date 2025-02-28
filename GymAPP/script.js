@@ -1,4 +1,3 @@
-// All available muscles for selection
 const allMuscles = [
     'Chest', 'Front Delts', 'Side Delts', 'Rear Delts', 'Lats',
     'Traps', 'Rhomboids', 'Lower Back', 'Biceps', 'Triceps',
@@ -7,7 +6,6 @@ const allMuscles = [
     'Serratus Anterior', 'Brachialis', 'Core Stabilizers'
 ];
 
-// Muscle groups for categories
 const muscleGroups = {
     chest: ['Chest', 'Front Delts', 'Serratus Anterior'],
     back: ['Lats', 'Traps', 'Rhomboids', 'Lower Back'],
@@ -17,7 +15,6 @@ const muscleGroups = {
     core: ['Abs', 'Obliques', 'Lower Back', 'Core Stabilizers']
 };
 
-// Essential data structures
 const exercises = {
     chest: [],
     back: [], 
@@ -27,19 +24,16 @@ const exercises = {
     core: []
 };
 
-// Global state management
 let userExercises = {};
 let workoutData = {};
 let currentDate = new Date();
 let currentDay = null;
 let currentEditingExercise = null;
 
-// DOM Elements
 const modal = document.getElementById('exercise-modal');
 const categorySelect = document.getElementById('exercise-category');
 const exerciseSelect = document.getElementById('exercise-select');
 
-// Storage functions
 function loadUserExercises() {
     const stored = localStorage.getItem('userExercises');
     userExercises = stored ? JSON.parse(stored) : {};
@@ -58,7 +52,6 @@ function saveWorkoutData() {
     localStorage.setItem('workoutData', JSON.stringify(workoutData));
 }
 
-// Week management
 function getWeekKey(date = currentDate) {
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
@@ -72,7 +65,6 @@ function changeWeek(days) {
     const oldWeekKey = getWeekKey(oldDate);
     const newWeekKey = getWeekKey();
 
-    // Copy repeating exercises to new week
     if (days !== 0 && workoutData[oldWeekKey]) {
         if (!workoutData[newWeekKey]) {
             workoutData[newWeekKey] = {};
@@ -95,7 +87,6 @@ function updateWeekDisplay() {
     renderWorkouts();
 }
 
-// Function to handle adding a new exercise
 function addExercise() {
     if (!exerciseSelect.value) {
         alert('Please select an exercise');
@@ -129,7 +120,6 @@ function addExercise() {
     modal.style.display = 'none';
 }
 
-// Function to handle deleting an exercise
 function deleteExercise(day, index) {
     const weekKey = getWeekKey();
     if (confirm('Are you sure you want to delete this exercise?')) {
@@ -139,7 +129,6 @@ function deleteExercise(day, index) {
     }
 }
 
-// Function to render workouts
 function renderWorkouts() {
     const weekKey = getWeekKey();
     document.querySelectorAll('.day').forEach(dayElement => {
@@ -152,14 +141,12 @@ function renderWorkouts() {
                 const exerciseItem = document.createElement('div');
                 exerciseItem.classList.add('exercise-item');
 
-                // Exercise header
                 const header = document.createElement('div');
                 header.classList.add('exercise-header');
                 const name = document.createElement('span');
                 name.textContent = exerciseData.exercise;
                 header.appendChild(name);
 
-                // Delete button
                 const deleteButton = document.createElement('button');
                 deleteButton.classList.add('delete-exercise');
                 deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
@@ -170,7 +157,6 @@ function renderWorkouts() {
 
                 exerciseItem.appendChild(header);
 
-                // Exercise details
                 const details = document.createElement('div');
                 details.classList.add('exercise-details');
                 details.innerHTML = `
@@ -180,7 +166,6 @@ function renderWorkouts() {
                 `;
                 exerciseItem.appendChild(details);
 
-                // Input fields for actual progress
                 for (let i = 0; i < exerciseData.sets; i++) {
                     const setInfo = document.createElement('div');
                     setInfo.classList.add('set-info');
@@ -228,7 +213,6 @@ function renderWorkouts() {
     });
 }
 
-// Function to save actual progress
 function saveActualProgress(event, day, index) {
     const weekKey = getWeekKey();
 
@@ -246,10 +230,8 @@ function saveActualProgress(event, day, index) {
     saveWorkoutData();
 }
 
-// Modal state management
 let isModalOpen = false;
 
-// Modal elements
 const exerciseModal = document.getElementById('exercise-modal');
 const detailsModal = document.getElementById('exercise-details-modal');
 const closeModalBtn = document.getElementById('close-modal');
@@ -282,9 +264,7 @@ function closeDetailsModal() {
     isModalOpen = false;
 }
 
-// Event handlers for modal management
 function setupModalEventListeners() {
-    // Close on X button click
     closeModalBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -297,7 +277,6 @@ function setupModalEventListeners() {
         closeDetailsModal();
     });
 
-    // Close on outside click
     window.addEventListener('click', (e) => {
         if (e.target === exerciseModal) {
             closeModal();
@@ -307,7 +286,6 @@ function setupModalEventListeners() {
         }
     });
 
-    // Prevent modal close on modal content click
     const modalContents = document.querySelectorAll('.modal-content');
     modalContents.forEach(content => {
         content.addEventListener('click', (e) => {
@@ -315,7 +293,6 @@ function setupModalEventListeners() {
         });
     });
 
-    // Close on ESC key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeModal();
@@ -324,7 +301,6 @@ function setupModalEventListeners() {
     });
 }
 
-// Modal management
 function resetModalFields() {
     categorySelect.value = '';
     exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
@@ -334,9 +310,7 @@ function resetModalFields() {
     document.getElementById('exercise-repeating').checked = false;
 }
 
-// Event listeners and initialization
 function setupEventListeners() {
-    // Add exercise buttons in index.html
     document.querySelectorAll('.add-exercise').forEach(button => {
         button.addEventListener('click', () => {
             const day = button.closest('.day').dataset.day;
@@ -344,21 +318,17 @@ function setupEventListeners() {
         });
     });
 
-    // Modal controls in index.html
     document.getElementById('close-modal').addEventListener('click', closeModal);
     document.getElementById('add-exercise-btn').addEventListener('click', (event) => {
         event.preventDefault();
         addExercise();
     });
 
-    // Category selection in index.html
     categorySelect.addEventListener('change', updateExerciseOptions);
 
-    // Week navigation in index.html
     document.getElementById('prev-week').addEventListener('click', () => changeWeek(-7));
     document.getElementById('next-week').addEventListener('click', () => changeWeek(7));
 
-    // Save/Load workout buttons in index.html
     document.getElementById('save-workout')?.addEventListener('click', () => {
         saveWorkoutData();
         alert('Workout data saved.');
@@ -370,7 +340,6 @@ function setupEventListeners() {
         alert('Workout data loaded.');
     });
 
-    // Exercise item click in manage_exercises.html
     if (document.getElementById('exercise-list')) {
         document.getElementById('exercise-list').addEventListener('click', (event) => {
             const exerciseItem = event.target.closest('.exercise-item');
@@ -382,18 +351,14 @@ function setupEventListeners() {
         });
     }
 
-    // Close details modal in manage_exercises.html
     document.getElementById('close-details-modal')?.addEventListener('click', closeDetailsModal);
 
-    // Edit and Save buttons in manage_exercises.html
     document.getElementById('edit-exercise-btn')?.addEventListener('click', enableEditMode);
     document.getElementById('save-exercise-btn')?.addEventListener('click', saveExerciseChanges);
 
-    // Filter exercises in manage_exercises.html
     document.getElementById('filter-category')?.addEventListener('change', renderExerciseList);
 }
 
-// Initialize default exercises if none exist
 function initializeDefaultExercises() {
     if (Object.keys(userExercises).length === 0) {
         userExercises = JSON.parse(JSON.stringify(exercises));
@@ -401,7 +366,6 @@ function initializeDefaultExercises() {
     }
 }
 
-// Call during initialization
 document.addEventListener('DOMContentLoaded', () => {
     loadUserExercises();
     loadWorkoutData();
@@ -417,13 +381,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Prevent modals from showing on page load
 function preventModalOnLoad() {
     document.getElementById('exercise-modal')?.classList.remove('show');
     document.getElementById('exercise-details-modal')?.classList.remove('show');
 }
 
-// Update exercise options when category is selected
 function updateExerciseOptions() {
     const category = categorySelect.value;
     exerciseSelect.innerHTML = '<option value="">Select Exercise</option>';
@@ -442,7 +404,6 @@ function updateExerciseOptions() {
     }
 }
 
-// Functions for manage_exercises.html
 function initManageExercises() {
     initializeExerciseForm();
     renderExerciseList();
@@ -573,15 +534,12 @@ function saveExerciseChanges() {
         return;
     }
 
-    // Remove from old category if category changed
     if (currentEditingExercise.originalCategory !== newCategory) {
         userExercises[currentEditingExercise.originalCategory] = userExercises[currentEditingExercise.originalCategory].filter(ex => ex.name !== currentEditingExercise.name);
     } else {
-        // Remove the old exercise
         userExercises[newCategory] = userExercises[newCategory].filter(ex => ex.name !== currentEditingExercise.name);
     }
 
-    // Add updated exercise
     const updatedExercise = {
         name: newName,
         category: newCategory,
@@ -599,16 +557,13 @@ function saveExerciseChanges() {
     saveUserExercises();
     renderExerciseList();
 
-    // Close modal
     document.getElementById('exercise-details-modal').classList.remove('show');
 }
 
 function updateMuscleOptions(category, directContainer, indirectContainer) {
-    // Clear current options
     directContainer.innerHTML = '';
     indirectContainer.innerHTML = '';
 
-    // Add suggested primary muscles based on category
     if (category && muscleGroups[category]) {
         muscleGroups[category].forEach(muscle => {
             const muscleOption = document.createElement('div');
@@ -621,7 +576,6 @@ function updateMuscleOptions(category, directContainer, indirectContainer) {
         });
     }
 
-    // Add all muscles as secondary options
     allMuscles.forEach(muscle => {
         const muscleOption = document.createElement('div');
         muscleOption.classList.add('muscle-option');
@@ -651,19 +605,16 @@ function addNewExercise() {
         return;
     }
 
-    // Initialize category if it doesn't exist
     if (!userExercises[category]) {
         userExercises[category] = [];
     }
 
-    // Check for duplicate exercise
     const exists = userExercises[category].some(ex => ex.name.toLowerCase() === name.toLowerCase());
     if (exists) {
         alert('An exercise with this name already exists in the selected category.');
         return;
     }
 
-    // Create and add new exercise
     const newExercise = {
         name: name,
         category: category,
@@ -693,14 +644,11 @@ function resetNewExerciseFields() {
 }
 
 function setupEditMode() {
-    // Edit button click handler is already set up in setupEventListeners()
 }
 
 function setupManageEventListeners() {
-    // Close modal
     document.getElementById('close-details-modal').addEventListener('click', closeDetailsModal);
 
-    // Edit category change
     document.getElementById('edit-exercise-category').addEventListener('change', () => {
         const newCategory = document.getElementById('edit-exercise-category').value;
         const directMusclesContainer = document.getElementById('edit-direct-muscles');
@@ -709,10 +657,8 @@ function setupManageEventListeners() {
     });
 }
 
-// Ensure modals are closed on page load
 window.addEventListener('load', preventModalOnLoad);
 
-// Error handling wrapper
 function handleError(fn) {
     return function(...args) {
         try {
@@ -724,7 +670,6 @@ function handleError(fn) {
     };
 }
 
-// Wrap key functions with error handling
 addExercise = handleError(addExercise);
 saveExerciseChanges = handleError(saveExerciseChanges);
 deleteExercise = handleError(deleteExercise);
