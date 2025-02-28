@@ -1,0 +1,286 @@
+# Gym Training App: Comprehensive Requirements & Scientific Framework
+
+## 1. Core Vision and Purpose
+
+The app aims to create a scientifically-sound, evidence-based platform for strength training that accomplishes three key goals:
+
+1. **Exercise Management**: Allow users to build a personalized exercise library with precise muscle targeting information
+2. **Workout Planning**: Enable creation of structured workout templates with volume optimization based on scientific literature
+3. **Training Logging**: Provide intelligent workout execution with progressive overload tracking and performance metrics
+
+The app should integrate exercise science principles throughout, making research-based training approaches accessible to all users.
+
+## 2. Scientific Principles to Incorporate
+
+### 2.1 Volume Landmarks
+* Implement **Minimum Effective Volume (MEV)**, **Maximum Adaptive Volume (MAV)**, and **Maximum Recoverable Volume (MRV)** concepts (Israetel et al., 2019)
+* Default recommendations per muscle group:
+  * Chest: MEV 8 sets, MAV 12-16 sets, MRV 20 sets weekly
+  * Back: MEV 10 sets, MAV 14-22 sets, MRV 25 sets weekly
+  * Shoulders: MEV 8 sets, MAV 16-22 sets, MRV 26 sets weekly
+  * Biceps: MEV 8 sets, MAV 14-20 sets, MRV 26 sets weekly
+  * Triceps: MEV 6 sets, MAV 10-14 sets, MRV 18 sets weekly
+  * Quads: MEV 8 sets, MAV 12-18 sets, MRV 22 sets weekly
+  * Hamstrings: MEV 6 sets, MAV 10-16 sets, MRV 20 sets weekly
+  * Glutes: MEV 4 sets, MAV 8-12 sets, MRV 16 sets weekly
+  * Calves: MEV 6 sets, MAV 12-16 sets, MRV 20 sets weekly
+  * Abs: MEV 0 sets, MAV 16-20 sets, MRV 25 sets weekly
+
+### 2.2 Effective Reps
+* Track **Reps In Reserve (RIR)** for each set (Zourdos et al., 2016)
+* Implement the concept of "effective reps" – last 5 reps before failure provide most growth stimulus
+* Recommendation: Most sets should be performed at 1-3 RIR for optimal balance of stimulus and fatigue
+
+### 2.3 Progressive Overload
+* Implement intelligent weight progression algorithms based on rep/RIR performance
+* If target reps achieved at target RIR: increase weight by 2.5-5% next session
+* If exceeded target reps: increase weight by 5-10% next session
+* If missed target reps: maintain or decrease weight by 5% next session
+
+### 2.4 Exercise Selection & Classification
+* Categorize exercises by:
+  * **Mechanical tension potential**: high, medium, low
+  * **Resistance profile**: consistent tension, ascending, descending, bell-shaped
+  * **Stability requirements**: stable, moderate, unstable
+  * **Range of motion**: partial, standard, extended
+  * **Primary/secondary muscle involvement**: percentage contribution estimates
+
+### 2.5 Frequency & Recovery
+* Support training frequencies from 1-6x per muscle group weekly
+* Implement recovery tracking based on:
+  * Time since last training of muscle group (minimum 48hr recovery recommendation)
+  * Volume accumulation (higher volumes require more recovery time)
+  * Intensity used (higher intensity requires more recovery time)
+
+### 2.6 Periodization
+* Support creation of mesocycles (4-8 week training blocks)
+* Enable volume progression within mesocycles:
+  * Week 1-2: Slightly below MAV
+  * Week 3-4: At MAV
+  * Week 5-6: Approaching MRV
+  * Week 7: Deload (50-60% of normal volume)
+
+## 3. Module-Specific Requirements
+
+### 3.1 Exercise Management Module
+
+**Functionality:**
+* Create custom exercises with precise muscle targeting
+* Specify primary (direct) and secondary (indirect) muscles worked
+* Set relative contribution percentages for muscle engagement
+* Categorize exercises by movement pattern (push, pull, squat, hinge, carry, rotation)
+* Add notes on execution form and technique cues
+* Support exercise variations (e.g., wide grip, close grip, incline, decline)
+
+**Scientific Additions:**
+* Include EMG activation data for common exercises when available
+* Movement plane categorization (sagittal, frontal, transverse)
+* Exercise efficiency ratings (stimulus-to-fatigue ratio)
+* Exercise complementarity rankings (which exercises pair well)
+
+**Database Structure:**
+```javascript
+exercise = {
+  name: String,
+  category: String, // chest, back, legs, etc.
+  movementPattern: String, // push, pull, hinge, squat, etc.
+  primaryMuscles: [
+    {muscle: String, contribution: Number} // e.g., {muscle: "Chest", contribution: 0.7}
+  ],
+  secondaryMuscles: [
+    {muscle: String, contribution: Number} // e.g., {muscle: "Triceps", contribution: 0.3}
+  ],
+  mechanicalTension: String, // high, medium, low
+  stabilityRequired: String, // high, medium, low
+  notes: String,
+  techniqueVideo: URL,
+  emgData: Object // if available
+}
+```
+
+### 3.2 Workout Planning Module
+
+**Functionality:**
+* Create workout templates with day-specific exercises
+* Support different plan types (full body, upper/lower, push/pull/legs, body part split)
+* Visualize weekly volume distribution across muscle groups
+* Compare volume to MEV/MAV/MRV recommendations
+* Support periodization models (linear, undulating, block)
+* Enable creation of mesocycles (4-8 week blocks)
+* Rest day and active recovery planning
+* Volume auto-balancing to hit targets
+
+**Scientific Additions:**
+* Exercise sequencing recommendations based on:
+  * Energy system requirements (compound movements first)
+  * Interference effects minimization
+  * Synergistic muscle pairings
+* Recovery deficit warnings when volume exceeds recommended MRV
+* Volume distribution recommendations based on muscle fiber type predominance
+* Option for autoregulation-based volume adjustments
+
+**Template Structure:**
+```javascript
+workoutPlan = {
+  name: String,
+  type: String, // full body, PPL, etc.
+  description: String,
+  mesocycle: {
+    length: Number, // weeks
+    currentWeek: Number,
+    volumeProgression: String // linear, step-loading, etc.
+  },
+  days: {
+    monday: {
+      type: String, // training, rest, active-recovery
+      focus: String, // push, pull, legs, etc.
+      exercises: [
+        {
+          exercise: Object, // reference to exercise object
+          sets: Number,
+          repRange: String, // e.g., "8-12"
+          rirRange: String, // e.g., "1-2"
+          restTime: Number, // seconds
+          notes: String
+        }
+      ]
+    },
+    // other days...
+  },
+  volumeAnalysis: {
+    // totals per muscle group compared to MEV/MAV/MRV
+  }
+}
+```
+
+### 3.3 Training Logging Module
+
+**Functionality:**
+* Select workout plans for execution
+* Track sets, reps, weight, and RIR in real-time
+* Intelligent weight recommendations between sets
+* Rest timer with customizable intervals
+* Performance tracking against previous sessions
+* Exercise completion tracking
+* Workout summary statistics (volume, duration, etc.)
+* Notes for subjective feedback
+
+**Scientific Additions:**
+* Implement Relative Intensity (RI) calculations (% of e1RM)
+* Calculated e1RM using various formulas (Brzycki, Epley, Lander)
+* Volume load tracking (sets × reps × weight)
+* Average RIR tracking to monitor intensity management
+* Time under tension estimates
+* Fatigue monitoring (performance decline within workout)
+* Session RPE tracking for overall difficulty assessment
+
+**Logging Structure:**
+```javascript
+workoutSession = {
+  date: Date,
+  planId: String, // reference to workout plan
+  duration: Number, // minutes
+  exercises: [
+    {
+      exercise: Object, // reference to exercise
+      sets: [
+        {
+          weight: Number,
+          reps: Number,
+          rir: Number,
+          restAfter: Number, // seconds
+          notes: String
+        }
+      ],
+      performance: {
+        volumeLoad: Number,
+        avgRI: Number, // average relative intensity
+        estimatedRM: Number, // calculated 1RM
+        vs_previous: Object // comparison metrics
+      }
+    }
+  ],
+  summary: {
+    totalVolume: Number,
+    totalSets: Number,
+    avgIntensity: Number,
+    primaryMusclesWorked: Array,
+    sessionRPE: Number // 1-10 difficulty rating
+  },
+  notes: String
+}
+```
+
+## 4. Advanced Features for Future Implementation
+
+### 4.1 Fatigue Management
+* Implement readiness assessment questionnaires
+* Support autoregulation methods (RPE/RIR adjustments)
+* Fatigue tracking across sessions and recommendations for volume adjustments
+* Implementation of fitness-fatigue model for performance prediction
+
+### 4.2 Visualization & Analytics
+* Muscle group development tracking over time
+* Estimated muscle hypertrophy projections
+* Strength progression curves with trend analysis
+* Volume distribution pie charts and heat maps
+* Performance vs. recovery correlation analysis
+
+### 4.3 Smart Programming
+* AI-assisted exercise selection based on goals
+* Intelligent deload timing recommendations
+* Exercise rotation suggestions to prevent staleness
+* Weakness identification and correction recommendations
+* Automated mesocycle generation based on user history and goals
+
+### 4.4 Scientific Integration
+* Option to toggle between different scientific models
+* Citations for all recommendations with links to research
+* Updates based on new research findings
+* Educational content on exercise science principles
+
+## 5. Technical Implementation Priorities
+
+### 5.1 Data Structure Consistency
+* Ensure consistent objects for exercises, workouts, and logs
+* Implement proper normalization for efficient data storage
+* Create robust validation for all user inputs
+
+### 5.2 Algorithm Development
+* Intelligent weight progression suggestions
+* Volume calculation across complex training splits
+* Accurate e1RM estimations with confidence intervals
+* Exercise efficiency scoring
+
+### 5.3 User Experience
+* Intuitive workout building interface
+* Quick logging during active workouts
+* Clear visualization of scientific concepts
+* Educational tooltips explaining the science
+
+### 5.4 Performance Optimization
+* Efficient local storage management
+* Calculation caching for performance metrics
+* Batch processing for analytics operations
+
+## 6. Scientific References
+
+1. Israetel, M., Davis, M., Case, J., & Hoffman, J. R. (2019). Scientific Principles of Strength Training. Renaissance Periodization.
+
+2. Zourdos, M. C., Klemp, A., Dolan, C., Quiles, J. M., Schau, K. A., Jo, E., Helms, E., Esgro, B., Duncan, S., Garcia Merino, S., & Blanco, R. (2016). Novel Resistance Training–Specific Rating of Perceived Exertion Scale Measuring Repetitions in Reserve. Journal of Strength and Conditioning Research, 30(1), 267–275.
+
+3. Schoenfeld, B. J., Ogborn, D., & Krieger, J. W. (2017). Dose-response relationship between weekly resistance training volume and increases in muscle mass: A systematic review and meta-analysis. Journal of Sports Sciences, 35(11), 1073–1082.
+
+4. Baz-Valle, E., Fontes-Villalba, M., & Santos-Concejero, J. (2018). Total Number of Sets as a Training Volume Quantification Method for Muscle Hypertrophy: A Systematic Review. Journal of Strength and Conditioning Research.
+
+5. Helms, E. R., Cronin, J., Storey, A., & Zourdos, M. C. (2016). Application of the Repetitions in Reserve-Based Rating of Perceived Exertion Scale for Resistance Training. Strength & Conditioning Journal, 38(4), 42–49.
+
+6. Weakley, J., Mann, B., Banyard, H., McLaren, S., Scott, T., & Garcia-Ramos, A. (2021). Velocity-based training: From theory to application. Strength & Conditioning Journal, 43(2), 31-49.
+
+7. Haff, G. G., & Triplett, N. T. (Eds.). (2015). Essentials of Strength Training and Conditioning (4th ed.). Human Kinetics.
+
+8. Schoenfeld, B. J. (2010). The mechanisms of muscle hypertrophy and their application to resistance training. Journal of Strength and Conditioning Research, 24(10), 2857–2872.
+
+9. Ratamess, N. A., Alvar, B. A., Evetoch, T. K., Housh, T. J., Kibler, W. B., Kraemer, W. J., & Triplett, N. T. (2009). Progression Models in Resistance Training for Healthy Adults. Medicine & Science in Sports & Exercise, 41(3), 687–708.
+
+10. Halperin, I., Vigotsky, A. D., Foster, C., & Pyne, D. B. (2018). Strengthening the Practice of Exercise and Sport-Science Research. International Journal of Sports Physiology and Performance, 13(2), 127–134.
