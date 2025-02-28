@@ -33,7 +33,7 @@
     <header>
         <h1>Workout Planner</h1>
         <nav>
-            <a href="index.html" class="nav-link">
+            <a href="training_log.html" class="nav-link">
                 <i class="fas fa-home"></i> Training Log
             </a>
             <a href="manage_exercises.html" class="nav-link">
@@ -82,6 +82,30 @@
                         <div class="form-group">
                             <label for="plan-description">Description (Optional)</label>
                             <textarea id="plan-description" rows="2" placeholder="Brief description of your workout plan"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="training-goal">Training Goal</label>
+                            <select id="training-goal">
+                                <!-- Will be populated via JavaScript -->
+                            </select>
+                            <div class="goal-recommendations">
+                                <div class="recommendation-item">
+                                    <span class="recommendation-label">Rep Range:</span>
+                                    <span id="recommended-rep-range" class="recommendation-value">8-12</span>
+                                </div>
+                                <div class="recommendation-item">
+                                    <span class="recommendation-label">RIR Range:</span>
+                                    <span id="recommended-rir-range" class="recommendation-value">1-3</span>
+                                </div>
+                                <div class="recommendation-item">
+                                    <span class="recommendation-label">Rest Time:</span>
+                                    <span id="recommended-rest-range" class="recommendation-value">60-90 seconds</span>
+                                </div>
+                                <div class="recommendation-item">
+                                    <span class="recommendation-label">Frequency:</span>
+                                    <span id="recommended-frequency" class="recommendation-value">2-3× per muscle group weekly</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -165,7 +189,7 @@
                     <div class="muscle-volume-analysis">
                         <div class="section-header">
                             <h3>Volume Analysis</h3>
-                            <p class="helper-text">Weekly training volume by muscle group</p>
+                            <p class="helper-text">Weekly training volume by muscle group compared to scientific recommendations</p>
                         </div>
                         <div id="volume-chart" class="volume-chart">
                             <!-- Volume visualization will go here -->

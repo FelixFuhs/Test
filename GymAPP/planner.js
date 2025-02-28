@@ -11,31 +11,124 @@ let workoutPlans = {};
 let currentPlan = null;
 let currentDay = 'monday';
 
-// Recommended weekly volume ranges (sets per muscle group)
-const volumeRecommendations = {
-    'Chest': { min: 10, max: 16, color: '#FF6B6B' },
-    'Front Delts': { min: 6, max: 12, color: '#4ECDC4' },
-    'Side Delts': { min: 12, max: 20, color: '#4ECDC4' },
-    'Rear Delts': { min: 12, max: 20, color: '#4ECDC4' },
-    'Lats': { min: 12, max: 18, color: '#1A535C' },
-    'Traps': { min: 10, max: 16, color: '#1A535C' },
-    'Rhomboids': { min: 8, max: 14, color: '#1A535C' },
-    'Lower Back': { min: 8, max: 14, color: '#1A535C' },
-    'Biceps': { min: 8, max: 14, color: '#FFE66D' },
-    'Triceps': { min: 8, max: 14, color: '#FFE66D' },
-    'Forearms': { min: 6, max: 12, color: '#FFE66D' },
-    'Abs': { min: 12, max: 20, color: '#F7FFF7' },
-    'Obliques': { min: 8, max: 14, color: '#F7FFF7' },
-    'Quads': { min: 12, max: 18, color: '#6B5B95' },
-    'Hamstrings': { min: 10, max: 16, color: '#6B5B95' },
-    'Glutes': { min: 12, max: 18, color: '#6B5B95' },
-    'Calves': { min: 8, max: 16, color: '#6B5B95' },
-    'Hip Flexors': { min: 6, max: 12, color: '#6B5B95' },
-    'Adductors': { min: 6, max: 12, color: '#6B5B95' },
-    'Serratus Anterior': { min: 6, max: 10, color: '#FF6B6B' },
-    'Brachialis': { min: 6, max: 12, color: '#FFE66D' },
-    'Core Stabilizers': { min: 8, max: 14, color: '#F7FFF7' }
+// Training volume landmarks based on scientific research
+// Based on Dr. Mike Israetel's volume landmarks (2019)
+const volumeLandmarks = {
+    'Chest': { MV: 6, MEV: 10, MAV: 16, MRV: 22, color: '#FF6B6B' },
+    'Front Delts': { MV: 4, MEV: 6, MAV: 12, MRV: 20, color: '#4ECDC4' },
+    'Side Delts': { MV: 6, MEV: 12, MAV: 20, MRV: 26, color: '#4ECDC4' },
+    'Rear Delts': { MV: 6, MEV: 12, MAV: 20, MRV: 26, color: '#4ECDC4' },
+    'Lats': { MV: 6, MEV: 12, MAV: 18, MRV: 25, color: '#1A535C' },
+    'Traps': { MV: 6, MEV: 10, MAV: 16, MRV: 22, color: '#1A535C' },
+    'Rhomboids': { MV: 4, MEV: 8, MAV: 14, MRV: 20, color: '#1A535C' },
+    'Lower Back': { MV: 4, MEV: 8, MAV: 14, MRV: 20, color: '#1A535C' },
+    'Biceps': { MV: 5, MEV: 8, MAV: 14, MRV: 20, color: '#FFE66D' },
+    'Triceps': { MV: 4, MEV: 8, MAV: 14, MRV: 20, color: '#FFE66D' },
+    'Forearms': { MV: 4, MEV: 6, MAV: 12, MRV: 16, color: '#FFE66D' },
+    'Abs': { MV: 0, MEV: 12, MAV: 16, MRV: 20, color: '#F7FFF7' },
+    'Obliques': { MV: 0, MEV: 8, MAV: 14, MRV: 20, color: '#F7FFF7' },
+    'Quads': { MV: 6, MEV: 12, MAV: 18, MRV: 22, color: '#6B5B95' },
+    'Hamstrings': { MV: 4, MEV: 10, MAV: 16, MRV: 20, color: '#6B5B95' },
+    'Glutes': { MV: 4, MEV: 12, MAV: 18, MRV: 24, color: '#6B5B95' },
+    'Calves': { MV: 6, MEV: 8, MAV: 16, MRV: 20, color: '#6B5B95' },
+    'Hip Flexors': { MV: 0, MEV: 6, MAV: 12, MRV: 16, color: '#6B5B95' },
+    'Adductors': { MV: 4, MEV: 6, MAV: 12, MRV: 16, color: '#6B5B95' },
+    'Serratus Anterior': { MV: 2, MEV: 6, MAV: 10, MRV: 14, color: '#FF6B6B' },
+    'Brachialis': { MV: 4, MEV: 6, MAV: 12, MRV: 16, color: '#FFE66D' },
+    'Core Stabilizers': { MV: 0, MEV: 8, MAV: 14, MRV: 20, color: '#F7FFF7' }
 };
+
+// Frequency recommendations by muscle group
+const frequencyRecommendations = {
+    // Large muscles - recover more slowly, typically lower frequency
+    'Chest': { min: 2, optimal: 3, max: 4 },
+    'Lats': { min: 2, optimal: 2, max: 3 },
+    'Quads': { min: 1, optimal: 2, max: 3 },
+    'Hamstrings': { min: 1, optimal: 2, max: 3 },
+    'Glutes': { min: 2, optimal: 2, max: 3 },
+    'Lower Back': { min: 1, optimal: 2, max: 3 },
+    
+    // Medium muscles
+    'Front Delts': { min: 2, optimal: 3, max: 4 },
+    'Side Delts': { min: 2, optimal: 3, max: 5 },
+    'Rear Delts': { min: 2, optimal: 3, max: 5 },
+    'Traps': { min: 1, optimal: 2, max: 4 },
+    'Rhomboids': { min: 2, optimal: 2, max: 4 },
+    
+    // Small muscles - recover faster, benefit from higher frequency
+    'Biceps': { min: 2, optimal: 3, max: 5 },
+    'Triceps': { min: 2, optimal: 3, max: 5 },
+    'Calves': { min: 2, optimal: 3, max: 6 },
+    'Forearms': { min: 2, optimal: 3, max: 4 },
+    'Abs': { min: 2, optimal: 3, max: 5 },
+    'Obliques': { min: 2, optimal: 3, max: 5 },
+    
+    // Other muscles
+    'Hip Flexors': { min: 1, optimal: 2, max: 3 },
+    'Adductors': { min: 1, optimal: 2, max: 3 },
+    'Serratus Anterior': { min: 1, optimal: 2, max: 3 },
+    'Brachialis': { min: 2, optimal: 3, max: 5 },
+    'Core Stabilizers': { min: 2, optimal: 3, max: 5 }
+};
+
+// Training goal presets
+const trainingGoals = {
+    hypertrophy: {
+        name: "Hypertrophy",
+        repRange: "8-12",
+        rirRange: "1-3",
+        restRange: "60-90",
+        frequency: "2-3× per muscle group weekly",
+        description: "Optimal for muscle growth",
+        volumeFocus: "MAV"
+    },
+    strength: {
+        name: "Strength",
+        repRange: "3-6",
+        rirRange: "2-4",
+        restRange: "180-300",
+        frequency: "2-4× per muscle group weekly",
+        description: "Optimal for maximal strength",
+        volumeFocus: "MEV to lower MAV",
+        volumeTarget: 0.7  // Use 70% of MAV for strength
+    },
+    power: {
+        name: "Power",
+        repRange: "1-5",
+        rirRange: "3-6",
+        restRange: "180-300",
+        frequency: "3-4× per muscle group weekly",
+        description: "Optimal for explosive strength",
+        volumeFocus: "MEV",
+        volumeTarget: 1.0  // Use 100% of MEV for power
+    },
+    endurance: {
+        name: "Muscular Endurance",
+        repRange: "15-30",
+        rirRange: "0-2",
+        restRange: "30-60",
+        frequency: "2-3× per muscle group weekly",
+        description: "Optimal for muscular endurance",
+        volumeFocus: "MAV to MRV",
+        volumeTarget: 0.9  // Use 90% of MRV for endurance
+    },
+    balanced: {
+        name: "Balanced",
+        repRange: "6-15",
+        rirRange: "1-3",
+        restRange: "90-120",
+        frequency: "2-3× per muscle group weekly",
+        description: "Balanced approach for size and strength",
+        volumeFocus: "MAV",
+        volumeTarget: 1.0  // Use 100% of MAV for balanced
+    }
+};
+
+// Current training goal
+let currentTrainingGoal = "hypertrophy";
+
+// Maximum RIR to count a set as a "working set"
+const WORKING_SET_THRESHOLD = 3; // Sets with RIR ≤ 3 count as full volume
 
 // Storage functions
 function loadWorkoutPlans() {
@@ -57,6 +150,39 @@ export function initPlanner() {
     renderPlansList();
     setupPlannerEventListeners();
     setupModalHandlers();
+    
+    // Initialize training goal selector if it exists
+    const goalSelector = document.getElementById('training-goal');
+    if (goalSelector) {
+        for (const key in trainingGoals) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = trainingGoals[key].name;
+            goalSelector.appendChild(option);
+        }
+        
+        goalSelector.value = currentTrainingGoal;
+        goalSelector.addEventListener('change', (e) => {
+            currentTrainingGoal = e.target.value;
+            updateVolumeChart();
+            
+            // Update recommendation displays
+            const goal = trainingGoals[currentTrainingGoal];
+            document.getElementById('recommended-rep-range').textContent = goal.repRange;
+            document.getElementById('recommended-rir-range').textContent = goal.rirRange;
+            document.getElementById('recommended-rest-range').textContent = goal.restRange + " seconds";
+            document.getElementById('recommended-frequency').textContent = goal.frequency;
+        });
+        
+        // Initialize recommendation displays
+        const goal = trainingGoals[currentTrainingGoal];
+        if (document.getElementById('recommended-rep-range')) {
+            document.getElementById('recommended-rep-range').textContent = goal.repRange;
+            document.getElementById('recommended-rir-range').textContent = goal.rirRange;
+            document.getElementById('recommended-rest-range').textContent = goal.restRange + " seconds";
+            document.getElementById('recommended-frequency').textContent = goal.frequency;
+        }
+    }
 }
 
 // Setup event listeners
@@ -84,6 +210,30 @@ function setupPlannerEventListeners() {
     
     // Add exercise to plan button
     document.getElementById('add-exercise-to-plan').addEventListener('click', openPlanExerciseModal);
+    
+    // Plan name and description input changes
+    const planNameInput = document.getElementById('plan-name');
+    const planDescriptionInput = document.getElementById('plan-description');
+    
+    if (planNameInput) {
+        planNameInput.addEventListener('input', () => {
+            if (currentPlan) {
+                workoutPlans[currentPlan].name = planNameInput.value;
+                saveWorkoutPlans();
+                renderPlansList(); // Update the list to show the new name
+            }
+        });
+    }
+    
+    if (planDescriptionInput) {
+        planDescriptionInput.addEventListener('input', () => {
+            if (currentPlan) {
+                workoutPlans[currentPlan].description = planDescriptionInput.value;
+                saveWorkoutPlans();
+                renderPlansList(); // Update the list to show the new description
+            }
+        });
+    }
 }
 
 // Setup modal handlers
@@ -122,6 +272,7 @@ function createNewPlan() {
         id: planId,
         name: 'New Workout Plan',
         description: '',
+        goal: currentTrainingGoal,
         days: {
             monday: { type: 'training', customName: '', exercises: [] },
             tuesday: { type: 'training', customName: '', exercises: [] },
@@ -140,7 +291,11 @@ function createNewPlan() {
     
     renderPlansList();
     selectPlan(planId);
-    savePlanDetails();
+    
+    // Ensure "New Workout Plan" appears in the input field immediately
+    document.getElementById('plan-name').value = newPlan.name;
+    
+    // Save to storage
     saveWorkoutPlans();
 }
 
@@ -231,6 +386,19 @@ function selectPlan(planId) {
     document.getElementById('plan-name').value = plan.name;
     document.getElementById('plan-description').value = plan.description || '';
     
+    // Set training goal if it exists on the plan
+    if (plan.goal && document.getElementById('training-goal')) {
+        document.getElementById('training-goal').value = plan.goal;
+        currentTrainingGoal = plan.goal;
+        
+        // Update recommendation displays
+        const goal = trainingGoals[currentTrainingGoal];
+        document.getElementById('recommended-rep-range').textContent = goal.repRange;
+        document.getElementById('recommended-rir-range').textContent = goal.rirRange;
+        document.getElementById('recommended-rest-range').textContent = goal.restRange + " seconds";
+        document.getElementById('recommended-frequency').textContent = goal.frequency;
+    }
+    
     // Switch to the first day tab
     document.querySelectorAll('.week-tabs .tab').forEach(tab => {
         tab.classList.remove('active');
@@ -265,12 +433,30 @@ function savePlanDetails() {
     if (!currentPlan || !workoutPlans[currentPlan]) return;
     
     const plan = workoutPlans[currentPlan];
-    plan.name = document.getElementById('plan-name').value;
-    plan.description = document.getElementById('plan-description').value;
+    const nameInput = document.getElementById('plan-name');
+    const descriptionInput = document.getElementById('plan-description');
+    
+    if (nameInput) {
+        plan.name = nameInput.value || 'Unnamed Plan';
+    }
+    
+    if (descriptionInput) {
+        plan.description = descriptionInput.value || '';
+    }
+    
     plan.updatedAt = new Date().toISOString();
+    
+    // Save training goal if the selector exists
+    const goalSelector = document.getElementById('training-goal');
+    if (goalSelector) {
+        plan.goal = goalSelector.value;
+    }
     
     // Save current day details
     saveDayDetails(currentDay);
+    
+    // Save to storage immediately
+    saveWorkoutPlans();
 }
 
 // Switch to a different day
@@ -405,6 +591,10 @@ function renderDayExercises(exercises) {
                 <div><strong>RIR:</strong> ${exercise.rirRange}</div>
                 <div><strong>Rest:</strong> ${exercise.rest}s</div>
             </div>
+            <div class="plan-exercise-muscles">
+                <div><strong>Primary:</strong> ${exercise.directMuscles.join(', ')}</div>
+                <div><strong>Secondary:</strong> ${exercise.indirectMuscles.join(', ')}</div>
+            </div>
             ${exercise.notes ? `<div class="plan-exercise-notes">${exercise.notes}</div>` : ''}
         `;
         
@@ -443,6 +633,17 @@ function openPlanExerciseModal() {
     
     // Remove any edit data attribute
     document.getElementById('add-plan-exercise-btn').removeAttribute('data-edit-index');
+    
+    // Set default values based on current training goal
+    const goal = trainingGoals[currentTrainingGoal];
+    const repRangeParts = goal.repRange.split('-');
+    const rirRangeParts = goal.rirRange.split('-');
+    const restRangeParts = goal.restRange.split('-');
+    
+    document.getElementById('plan-exercise-rep-range').value = goal.repRange;
+    document.getElementById('plan-exercise-rir-range').value = goal.rirRange;
+    document.getElementById('plan-exercise-rest').value = 
+        Math.floor((parseInt(restRangeParts[0]) + parseInt(restRangeParts[1])) / 2);
 }
 
 // Update exercise options based on selected category
@@ -458,6 +659,7 @@ function updatePlanExerciseOptions() {
             const option = document.createElement('option');
             option.value = exercise.name;
             option.textContent = exercise.name;
+            option.dataset.exercise = JSON.stringify(exercise);
             exerciseSelect.appendChild(option);
         });
     }
@@ -577,99 +779,177 @@ function deletePlanExercise(index) {
 
 // Calculate and update volume chart
 function updateVolumeChart() {
-    if (!currentPlan || !workoutPlans[currentPlan]) return;
+    if (!document.getElementById('volume-chart')) return;
     
-    const plan = workoutPlans[currentPlan];
     const volumeChart = document.getElementById('volume-chart');
     
     // Calculate volume for each muscle group
     const muscleVolume = {};
     
     // Initialize all muscle groups with zero volume
-    for (const muscle in volumeRecommendations) {
+    for (const muscle in volumeLandmarks) {
         muscleVolume[muscle] = 0;
     }
     
-    // Calculate volume from all training days
-    for (const day in plan.days) {
-        const dayData = plan.days[day];
+    // Calculate volume if we have a plan
+    if (currentPlan && workoutPlans[currentPlan]) {
+        const plan = workoutPlans[currentPlan];
         
-        if (dayData.type !== 'training') continue;
-        
-        dayData.exercises.forEach(exercise => {
-            // Add direct muscles (full sets)
-            exercise.directMuscles.forEach(muscle => {
-                muscleVolume[muscle] = (muscleVolume[muscle] || 0) + exercise.sets;
-            });
+        // Calculate volume from all training days
+        for (const day in plan.days) {
+            const dayData = plan.days[day];
             
-            // Add indirect muscles (half sets - estimating lower stimulus)
-            exercise.indirectMuscles.forEach(muscle => {
-                muscleVolume[muscle] = (muscleVolume[muscle] || 0) + (exercise.sets * 0.5);
+            if (dayData.type !== 'training') continue;
+            
+            dayData.exercises.forEach(exercise => {
+                // Get the RIR range
+                const rirRange = exercise.rirRange.split('-');
+                const avgRIR = (parseInt(rirRange[0]) + parseInt(rirRange[1])) / 2;
+                
+                // Determine if it's a working set based on RIR threshold
+                const volumeFactor = avgRIR <= WORKING_SET_THRESHOLD ? 1 : 0.5;
+                
+                // Add direct muscles (full sets)
+                exercise.directMuscles.forEach(muscle => {
+                    muscleVolume[muscle] = (muscleVolume[muscle] || 0) + (exercise.sets * volumeFactor);
+                });
+                
+                // Add indirect muscles (half sets - estimating lower stimulus)
+                exercise.indirectMuscles.forEach(muscle => {
+                    muscleVolume[muscle] = (muscleVolume[muscle] || 0) + (exercise.sets * volumeFactor * 0.5);
+                });
             });
-        });
+        }
     }
     
     // Generate chart HTML
     let chartHtml = '<div class="volume-bars">';
     
+    // Get current goal focus and target
+    const goal = trainingGoals[currentTrainingGoal];
+    const goalFocus = goal.volumeFocus;
+    const volumeTarget = goal.volumeTarget || 1.0;
+    
+    // Convert volumeFocus string to actual value based on goal
+    const getTargetValue = (muscle) => {
+        const landmarks = volumeLandmarks[muscle];
+        
+        if (goalFocus === "MAV") {
+            return landmarks.MAV * volumeTarget;
+        } else if (goalFocus === "MEV") {
+            return landmarks.MEV * volumeTarget;
+        } else if (goalFocus === "MRV") {
+            return landmarks.MRV * volumeTarget;
+        } else if (goalFocus === "MEV to lower MAV") {
+            return landmarks.MEV + ((landmarks.MAV - landmarks.MEV) * 0.3) * volumeTarget;
+        } else if (goalFocus === "MAV to MRV") {
+            return landmarks.MAV + ((landmarks.MRV - landmarks.MAV) * 0.5) * volumeTarget;
+        } else {
+            return landmarks.MAV * volumeTarget;
+        }
+    };
+    
     // Sort muscles by volume
-    const sortedMuscles = Object.keys(muscleVolume).sort((a, b) => 
-        muscleVolume[b] - muscleVolume[a]
-    );
+    const sortedMuscles = Object.keys(volumeLandmarks).sort((a, b) => {
+        // First sort by whether there's any volume
+        const aHasVolume = muscleVolume[a] > 0;
+        const bHasVolume = muscleVolume[b] > 0;
+        
+        if (aHasVolume && !bHasVolume) return -1;
+        if (!aHasVolume && bHasVolume) return 1;
+        
+        // Then sort by how far from the target they are
+        const aTarget = getTargetValue(a);
+        const bTarget = getTargetValue(b);
+        
+        const aDistance = Math.abs(muscleVolume[a] - aTarget);
+        const bDistance = Math.abs(muscleVolume[b] - bTarget);
+        
+        // Sort muscles with higher deviation from target first
+        return bDistance - aDistance;
+    });
     
-    // Only display muscles with some volume
-    const activeMuscles = sortedMuscles.filter(muscle => muscleVolume[muscle] > 0);
+    // Show all muscles regardless of current volume
+    const musclesToShow = sortedMuscles;
     
-    if (activeMuscles.length === 0) {
+    if (musclesToShow.length === 0) {
         volumeChart.innerHTML = `
             <div class="empty-state small">
-                <p>No training volume yet</p>
+                <p>No training volume data available</p>
                 <p>Add exercises to see volume analysis</p>
             </div>
         `;
         return;
     }
     
-    activeMuscles.forEach(muscle => {
+    musclesToShow.forEach(muscle => {
         const volume = muscleVolume[muscle];
-        const recommendation = volumeRecommendations[muscle];
+        const landmarks = volumeLandmarks[muscle];
+        const targetValue = getTargetValue(muscle);
         
+        // Determine status based on volume landmarks
         let statusClass = 'optimal';
+        let statusText = '';
         
-        if (volume < recommendation.min) {
+        if (volume < landmarks.MV) {
             statusClass = 'too-low';
-        } else if (volume > recommendation.max) {
+            statusText = 'Below maintenance (MV)';
+        } else if (volume < landmarks.MEV) {
+            statusClass = 'low';
+            statusText = 'Maintenance only';
+        } else if (volume < Math.min(targetValue, landmarks.MAV)) {
+            statusClass = 'good';
+            statusText = 'Growth range';
+        } else if (volume <= landmarks.MRV) {
+            statusClass = 'high';
+            statusText = 'Optimal growth';
+        } else {
             statusClass = 'too-high';
+            statusText = 'Exceeds recoverable volume';
         }
         
-        // Calculate percentage for bar width (based on max recommendation being 100%)
-        const maxVolumeForDisplay = Math.max(recommendation.max * 1.5, volume);
+        // Special handling for strength/power goals
+        if (goalFocus === "MEV" || goalFocus === "MEV to lower MAV") {
+            if (Math.abs(volume - targetValue) < 2) {
+                statusClass = 'optimal';
+                statusText = 'Optimal for strength/power';
+            }
+        }
+        
+        // Calculate percentage for bar width (based on MRV being 100%)
+        const maxVolumeForDisplay = landmarks.MRV * 1.2; // 20% buffer beyond MRV
         const percentage = (volume / maxVolumeForDisplay) * 100;
         
-        // Add min/max markers
-        const minPercentage = (recommendation.min / maxVolumeForDisplay) * 100;
-        const maxPercentage = (recommendation.max / maxVolumeForDisplay) * 100;
+        // Add landmark markers
+        const mvPercentage = (landmarks.MV / maxVolumeForDisplay) * 100;
+        const mevPercentage = (landmarks.MEV / maxVolumeForDisplay) * 100;
+        const mavPercentage = (landmarks.MAV / maxVolumeForDisplay) * 100;
+        const mrvPercentage = (landmarks.MRV / maxVolumeForDisplay) * 100;
+        const targetPercentage = (targetValue / maxVolumeForDisplay) * 100;
         
         chartHtml += `
             <div class="volume-bar-container">
-                <div class="volume-bar-label">${muscle}</div>
+                <div class="volume-bar-label">
+                    <strong>${muscle}</strong>
+                    <span class="volume-status ${statusClass}">${volume > 0 ? statusText : 'No volume'}</span>
+                </div>
                 <div class="volume-bar-wrapper">
-                    <div class="optimal-range" style="
-                        left: ${minPercentage}%; 
-                        width: ${maxPercentage - minPercentage}%;"
-                    ></div>
+                    <div class="landmarks">
+                        <div class="landmark mv" style="left: ${mvPercentage}%" title="Maintenance Volume (MV): ${landmarks.MV} sets"></div>
+                        <div class="landmark mev" style="left: ${mevPercentage}%" title="Minimum Effective Volume (MEV): ${landmarks.MEV} sets"></div>
+                        <div class="landmark mav" style="left: ${mavPercentage}%" title="Maximum Adaptive Volume (MAV): ${landmarks.MAV} sets"></div>
+                        <div class="landmark mrv" style="left: ${mrvPercentage}%" title="Maximum Recoverable Volume (MRV): ${landmarks.MRV} sets"></div>
+                        <div class="landmark target" style="left: ${targetPercentage}%" title="Target for ${goal.name}: ${Math.round(targetValue * 10) / 10} sets"></div>
+                    </div>
                     <div class="volume-bar ${statusClass}" style="
                         width: ${percentage}%; 
-                        background-color: ${recommendation.color};"
+                        background-color: ${landmarks.color};"
                     ></div>
-                    <span class="min-marker" style="left: ${minPercentage}%;">
-                        <span class="marker-value">${recommendation.min}</span>
-                    </span>
-                    <span class="max-marker" style="left: ${maxPercentage}%;">
-                        <span class="marker-value">${recommendation.max}</span>
-                    </span>
                 </div>
-                <div class="volume-value ${statusClass}">${Math.round(volume * 10) / 10}</div>
+                <div class="volume-value">
+                    <span class="current-volume ${statusClass}">${Math.round(volume * 10) / 10}</span>
+                    <span class="target-volume">${Math.round(targetValue * 10) / 10}</span>
+                </div>
             </div>
         `;
     });
@@ -680,19 +960,168 @@ function updateVolumeChart() {
     chartHtml += `
         <div class="volume-legend">
             <div class="legend-item">
-                <span class="legend-marker too-low"></span>
-                <span class="legend-text">Too Low</span>
+                <span class="legend-marker mv"></span>
+                <span class="legend-text">MV: Maintenance Volume</span>
             </div>
             <div class="legend-item">
-                <span class="legend-marker optimal"></span>
-                <span class="legend-text">Optimal Range</span>
+                <span class="legend-marker mev"></span>
+                <span class="legend-text">MEV: Minimum Effective Volume</span>
             </div>
             <div class="legend-item">
-                <span class="legend-marker too-high"></span>
-                <span class="legend-text">Too High</span>
+                <span class="legend-marker mav"></span>
+                <span class="legend-text">MAV: Maximum Adaptive Volume</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-marker mrv"></span>
+                <span class="legend-text">MRV: Maximum Recoverable Volume</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-marker target"></span>
+                <span class="legend-text">Target for ${goal.name}</span>
             </div>
         </div>
     `;
     
+    // Add frequency analysis
+    chartHtml += `<div class="frequency-analysis">
+        <h3>Muscle Group Frequency</h3>
+        <div class="frequency-bars">
+            ${generateFrequencyAnalysis()}
+        </div>
+    </div>`;
+    
     volumeChart.innerHTML = chartHtml;
+}
+
+// Calculate and generate frequency analysis
+function generateFrequencyAnalysis() {
+    // Get all muscle groups
+    const allMuscleGroups = Object.keys(frequencyRecommendations);
+    
+    // Initialize data object for each muscle
+    const muscleFrequency = {};
+    allMuscleGroups.forEach(muscle => {
+        muscleFrequency[muscle] = {
+            direct: 0,
+            indirect: 0,
+            days: new Set()
+        };
+    });
+    
+    // Calculate actual frequency if we have a plan
+    if (currentPlan && workoutPlans[currentPlan]) {
+        const plan = workoutPlans[currentPlan];
+        
+        // Calculate frequency from all training days
+        for (const day in plan.days) {
+            const dayData = plan.days[day];
+            
+            if (dayData.type !== 'training') continue;
+            
+            dayData.exercises.forEach(exercise => {
+                // Track direct muscles
+                exercise.directMuscles.forEach(muscle => {
+                    if (muscleFrequency[muscle]) {
+                        muscleFrequency[muscle].direct++;
+                        muscleFrequency[muscle].days.add(day);
+                    }
+                });
+                
+                // Track indirect muscles
+                exercise.indirectMuscles.forEach(muscle => {
+                    if (muscleFrequency[muscle]) {
+                        muscleFrequency[muscle].indirect++;
+                        muscleFrequency[muscle].days.add(day);
+                    }
+                });
+            });
+        }
+    }
+    
+    // Generate HTML for frequency analysis
+    let html = '';
+    
+    // Sort muscles by importance and then alphabetically
+    // Main muscle groups come first
+    const mainMuscleGroups = [
+        'Chest', 'Lats', 'Quads', 'Hamstrings', 'Glutes', 'Front Delts', 
+        'Side Delts', 'Rear Delts', 'Biceps', 'Triceps', 'Abs'
+    ];
+    
+    const sortedMuscles = allMuscleGroups.sort((a, b) => {
+        const aIsMain = mainMuscleGroups.includes(a);
+        const bIsMain = mainMuscleGroups.includes(b);
+        
+        if (aIsMain && !bIsMain) return -1;
+        if (!aIsMain && bIsMain) return 1;
+        
+        // Secondary sort by current frequency (higher first)
+        const aFreq = muscleFrequency[a]?.days.size || 0;
+        const bFreq = muscleFrequency[b]?.days.size || 0;
+        
+        if (aFreq !== bFreq) return bFreq - aFreq;
+        
+        // Finally, sort alphabetically
+        return a.localeCompare(b);
+    });
+    
+    // Create frequency bars for all muscles, showing recommendations
+    sortedMuscles.forEach(muscle => {
+        const data = muscleFrequency[muscle];
+        const freq = data ? data.days.size : 0;
+        const recs = frequencyRecommendations[muscle];
+        
+        if (!recs) return; // Skip if no recommendations available
+        
+        let statusClass = 'optimal';
+        let statusText = `Optimal (${recs.min}-${recs.max}× recommended)`;
+        
+        if (freq < recs.min) {
+            statusClass = 'too-low';
+            statusText = `Low (${recs.min}-${recs.max}× recommended)`;
+        } else if (freq > recs.max) {
+            statusClass = 'too-high';
+            statusText = `High (${recs.min}-${recs.max}× recommended)`;
+        }
+        
+        html += `
+            <div class="frequency-bar-container">
+                <div class="frequency-bar-label">${muscle}</div>
+                <div class="frequency-bar-wrapper">
+                    <div class="frequency-guidelines">
+                        <div class="min-frequency" style="left: ${(recs.min / 7) * 100}%" title="Minimum: ${recs.min}× weekly"></div>
+                        <div class="optimal-frequency" style="left: ${(recs.optimal / 7) * 100}%" title="Optimal: ${recs.optimal}× weekly"></div>
+                        <div class="max-frequency" style="left: ${(recs.max / 7) * 100}%" title="Maximum: ${recs.max}× weekly"></div>
+                    </div>
+                    <div class="frequency-bar ${statusClass}" 
+                         style="width: ${Math.max((freq / 7) * 100, 8)}%;">
+                        ${freq}× weekly
+                    </div>
+                </div>
+                <div class="frequency-recommendation ${statusClass}">
+                    ${statusText}
+                </div>
+            </div>
+        `;
+    });
+    
+    // Add legend for frequency guidelines
+    html += `
+        <div class="frequency-legend">
+            <div class="legend-item">
+                <span class="legend-marker min-frequency"></span>
+                <span class="legend-text">Minimum Effective Frequency</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-marker optimal-frequency"></span>
+                <span class="legend-text">Optimal Frequency</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-marker max-frequency"></span>
+                <span class="legend-text">Maximum Productive Frequency</span>
+            </div>
+        </div>
+    `;
+    
+    return html;
 }

@@ -1280,3 +1280,751 @@ button:hover {
         grid-template-columns: 1fr;
     }
 }
+/* New Volume Chart Styles */
+
+.volume-chart {
+    background: var(--background-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.volume-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.volume-bar-container {
+    display: grid;
+    grid-template-columns: 150px 1fr 80px;
+    align-items: center;
+    gap: 1rem;
+}
+
+.volume-bar-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.volume-status {
+    font-size: 0.7rem;
+    font-weight: 400;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    display: inline-block;
+    color: white;
+}
+
+.volume-status.too-low {
+    background-color: #FFA726;
+}
+
+.volume-status.low {
+    background-color: #FFCA28;
+    color: #333;
+}
+
+.volume-status.good, .volume-status.optimal {
+    background-color: #66BB6A;
+}
+
+.volume-status.high {
+    background-color: #42A5F5;
+}
+
+.volume-status.too-high {
+    background-color: #EF5350;
+}
+
+.volume-bar-wrapper {
+    position: relative;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    overflow: visible;
+}
+
+.landmarks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.landmark {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    z-index: 2;
+}
+
+.landmark.mv {
+    background-color: #FFCA28;
+}
+
+.landmark.mev {
+    background-color: #66BB6A;
+}
+
+.landmark.mav {
+    background-color: #42A5F5;
+}
+
+.landmark.mrv {
+    background-color: #EF5350;
+}
+
+.volume-bar {
+    position: absolute;
+    height: 100%;
+    border-radius: 15px;
+    z-index: 3;
+    transition: width 0.3s ease;
+}
+
+.volume-bar.too-low {
+    background-image: linear-gradient(to right, #FFA726, #FFCA28) !important;
+    opacity: 0.8;
+}
+
+.volume-bar.low {
+    background-image: linear-gradient(to right, #FFCA28, #9CCC65) !important;
+    opacity: 0.8;
+}
+
+.volume-bar.good, .volume-bar.optimal {
+    opacity: 0.9;
+}
+
+.volume-bar.high {
+    background-image: linear-gradient(to right, #66BB6A, #42A5F5) !important;
+    opacity: 0.9;
+}
+
+.volume-bar.too-high {
+    background-image: linear-gradient(to right, #42A5F5, #EF5350) !important;
+    opacity: 0.9;
+}
+
+.volume-value {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+}
+
+.current-volume {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.current-volume.too-low, .current-volume.low {
+    color: #F57C00;
+}
+
+.current-volume.good, .current-volume.optimal {
+    color: #388E3C;
+}
+
+.current-volume.high {
+    color: #1976D2;
+}
+
+.current-volume.too-high {
+    color: #D32F2F;
+}
+
+.target-volume {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.target-volume:before {
+    content: "Target: ";
+}
+
+.volume-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.legend-marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+}
+
+.legend-marker.mv {
+    background-color: #FFCA28;
+}
+
+.legend-marker.mev {
+    background-color: #66BB6A;
+}
+
+.legend-marker.mav {
+    background-color: #42A5F5;
+}
+
+.legend-marker.mrv {
+    background-color: #EF5350;
+}
+
+/* Frequency Analysis Styles */
+.frequency-analysis {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.frequency-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.frequency-bar-container {
+    display: grid;
+    grid-template-columns: 150px 1fr 180px;
+    align-items: center;
+    gap: 1rem;
+}
+
+.frequency-bar-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.frequency-bar-wrapper {
+    position: relative;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.frequency-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0 1rem;
+    border-radius: 12px;
+    transition: width 0.3s ease;
+}
+
+.frequency-bar.too-low {
+    background-color: #FFA726;
+}
+
+.frequency-bar.optimal {
+    background-color: #66BB6A;
+}
+
+.frequency-bar.too-high {
+    background-color: #EF5350;
+}
+
+.frequency-recommendation {
+    font-size: 0.8rem;
+}
+
+.frequency-recommendation.too-low {
+    color: #F57C00;
+}
+
+.frequency-recommendation.optimal {
+    color: #388E3C;
+}
+
+.frequency-recommendation.too-high {
+    color: #D32F2F;
+}
+
+/* Goal Recommendations Styles */
+.goal-recommendations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+}
+
+.recommendation-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 120px;
+}
+
+.recommendation-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.recommendation-value {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Enhanced Exercise Items in Plan */
+.plan-exercise-item {
+    margin-bottom: 1rem;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.plan-exercise-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.plan-exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background: var(--primary-color);
+    color: white;
+}
+
+.plan-exercise-name {
+    font-weight: 600;
+}
+
+.plan-exercise-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.plan-exercise-action {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.plan-exercise-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.plan-exercise-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.plan-exercise-muscles {
+    padding: 0.8rem 1rem;
+    background: rgba(0, 0, 0, 0.02);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.plan-exercise-notes {
+    padding: 0.8rem 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .volume-bar-container, .frequency-bar-container {
+        grid-template-columns: 100px 1fr 80px;
+    }
+    
+    .volume-bar-label, .frequency-bar-label {
+        font-size: 0.8rem;
+    }
+    
+    .volume-status {
+        font-size: 0.6rem;
+    }
+    
+    .goal-recommendations {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .volume-legend {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .volume-bar-container, .frequency-bar-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 0.5rem;
+    }
+    
+    .volume-bar-label, .frequency-bar-label {
+        text-align: center;
+    }
+    
+    .volume-value {
+        margin-top: 0.5rem;
+    }
+    
+    .goal-recommendations {
+        padding: 0.8rem;
+    }
+}
+/* Additional styles for frequency analysis and volume chart improvements */
+
+.landmark.target {
+    background-color: #FF4081;
+    width: 2px;
+    z-index: 3;
+}
+
+.legend-marker.target {
+    background-color: #FF4081;
+}
+
+.frequency-analysis {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.frequency-analysis h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.frequency-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+}
+
+.frequency-guidelines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.min-frequency, .optimal-frequency, .max-frequency {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    z-index: 2;
+}
+
+.min-frequency {
+    background-color: #FFCA28;
+}
+
+.optimal-frequency {
+    background-color: #66BB6A;
+    width: 3px;
+}
+
+.max-frequency {
+    background-color: #EF5350;
+}
+
+.legend-marker.min-frequency {
+    background-color: #FFCA28;
+}
+
+.legend-marker.optimal-frequency {
+    background-color: #66BB6A;
+}
+
+.legend-marker.max-frequency {
+    background-color: #EF5350;
+}
+
+/* Make the container for frequency bars more spaced out */
+.frequency-bar-container {
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
+}
+
+/* Better styling for frequency bar */
+.frequency-bar {
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 768px) {
+    .frequency-bar-container {
+        grid-template-columns: 120px 1fr 120px;
+    }
+    
+    .frequency-recommendation {
+        font-size: 0.7rem;
+    }
+    
+    .frequency-legend {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .frequency-legend .legend-item {
+        margin-bottom: 0.5rem;
+    }
+}
+/* Improved Frequency Analysis Display */
+
+.frequency-analysis {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.frequency-analysis h3 {
+    margin-bottom: 1.2rem;
+    font-size: 1.2rem;
+}
+
+.frequency-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.frequency-bar-container {
+    display: grid;
+    grid-template-columns: 120px 1fr 180px;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
+}
+
+.frequency-bar-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.frequency-bar-wrapper {
+    position: relative;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    overflow: visible;
+}
+
+.frequency-guidelines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.min-frequency, .optimal-frequency, .max-frequency {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    z-index: 2;
+}
+
+.min-frequency {
+    background-color: #FFCA28;
+}
+
+.optimal-frequency {
+    background-color: #66BB6A;
+    width: 3px;
+}
+
+.max-frequency {
+    background-color: #EF5350;
+}
+
+.frequency-bar {
+    height: 100%;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    z-index: 3;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.frequency-bar.too-low {
+    background-color: #FFA726;
+}
+
+.frequency-bar.optimal {
+    background-color: #66BB6A;
+}
+
+.frequency-bar.too-high {
+    background-color: #EF5350;
+}
+
+.frequency-recommendation {
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.frequency-recommendation.too-low {
+    color: #F57C00;
+    background-color: #FFF3E0;
+}
+
+.frequency-recommendation.optimal {
+    color: #388E3C;
+    background-color: #E8F5E9;
+}
+
+.frequency-recommendation.too-high {
+    color: #D32F2F;
+    background-color: #FFEBEE;
+}
+
+.frequency-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1.2rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.legend-marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+}
+
+.legend-marker.min-frequency {
+    background-color: #FFCA28;
+}
+
+.legend-marker.optimal-frequency {
+    background-color: #66BB6A;
+}
+
+.legend-marker.max-frequency {
+    background-color: #EF5350;
+}
+
+/* Media queries for better responsiveness */
+@media (max-width: 768px) {
+    .frequency-bar-container {
+        grid-template-columns: 100px 1fr 120px;
+        gap: 0.8rem;
+    }
+    
+    .frequency-recommendation {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .frequency-legend {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .frequency-bar-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 0.5rem;
+    }
+    
+    .frequency-bar-label {
+        margin-bottom: 0.2rem;
+    }
+    
+    .frequency-recommendation {
+        margin-top: 0.2rem;
+        text-align: center;
+    }
+}
