@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Exercises - Gym Training Tracker</title>
     <meta name="description" content="Manage and customize your exercise library">
     <meta name="theme-color" content="#333333">
-    <title>Manage Exercises - Gym Training Tracker</title>
+
     <!-- Preload critical assets -->
     <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="data.js" as="script">
+    <link rel="preload" href="ui.js" as="script">
+    <link rel="preload" href="main.js" as="script">
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
-          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -32,7 +42,7 @@
         <!-- Add New Exercise Section -->
         <section class="exercise-form" aria-labelledby="add-exercise-heading">
             <h2 id="add-exercise-heading">Add New Exercise</h2>
-            
+
             <form id="new-exercise-form" novalidate>
                 <!-- Category Selection -->
                 <div class="form-group">
@@ -41,9 +51,9 @@
                         <option value="">Select Category</option>
                         <option value="chest">Chest</option>
                         <option value="back">Back</option>
-                        <option value="legs">Legs</option>
                         <option value="shoulders">Shoulders</option>
                         <option value="arms">Arms</option>
+                        <option value="legs">Legs</option>
                         <option value="core">Core</option>
                     </select>
                 </div>
@@ -51,12 +61,12 @@
                 <!-- Exercise Name Input -->
                 <div class="form-group">
                     <label for="new-exercise-name">Exercise Name</label>
-                    <input type="text" id="new-exercise-name" 
+                    <input type="text" id="new-exercise-name"
                            placeholder="e.g., Bench Press" required
                            pattern="[A-Za-z0-9\s\-]+"
                            title="Use letters, numbers, spaces, and hyphens">
                 </div>
-            
+
                 <!-- Muscle Selections -->
                 <div class="muscle-selection">
                     <div class="direct-muscles">
@@ -65,12 +75,12 @@
                             <i class="fas fa-info-circle"></i>
                             Select the main muscles targeted by this exercise
                         </p>
-                        <div id="direct-muscles" class="muscle-options" role="group" 
+                        <div id="direct-muscles" class="muscle-options" role="group"
                              aria-label="Primary muscles selection">
                             <!-- Will be populated based on category -->
                         </div>
                     </div>
-                    
+
                     <div class="indirect-muscles">
                         <h3>Secondary Muscles</h3>
                         <p class="helper-text">
@@ -83,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <button type="submit" id="add-new-exercise-btn" class="primary-button">
                     <i class="fas fa-plus"></i> Add Exercise
                 </button>
@@ -99,9 +109,9 @@
                     <option value="">All Categories</option>
                     <option value="chest">Chest</option>
                     <option value="back">Back</option>
-                    <option value="legs">Legs</option>
                     <option value="shoulders">Shoulders</option>
                     <option value="arms">Arms</option>
+                    <option value="legs">Legs</option>
                     <option value="core">Core</option>
                 </select>
             </div>
@@ -112,14 +122,17 @@
     </main>
 
     <!-- Exercise Details Modal -->
-    <div id="exercise-details-modal" class="modal" role="dialog" 
+    <div id="exercise-details-modal" class="modal" role="dialog"
          aria-labelledby="exercise-details-title" aria-modal="true">
         <div class="modal-content exercise-details-content">
             <h2 id="exercise-details-title">Exercise Details</h2>
-            
+
             <!-- Details View -->
             <div id="exercise-details-content" class="exercise-details-grid">
-                <!-- Details will be inserted here -->
+                <div><strong>Name:</strong> <span id="detail-name"></span></div>
+                <div><strong>Category:</strong> <span id="detail-category"></span></div>
+                <div><strong>Primary Muscles:</strong> <span id="detail-direct-muscles"></span></div>
+                <div><strong>Secondary Muscles:</strong> <span id="detail-indirect-muscles"></span></div>
             </div>
 
             <!-- Edit Form -->
@@ -136,9 +149,9 @@
                     <select id="edit-exercise-category" required>
                         <option value="chest">Chest</option>
                         <option value="back">Back</option>
-                        <option value="legs">Legs</option>
                         <option value="shoulders">Shoulders</option>
                         <option value="arms">Arms</option>
+                        <option value="legs">Legs</option>
                         <option value="core">Core</option>
                     </select>
                 </div>
@@ -146,11 +159,15 @@
                 <div class="muscle-selection">
                     <div class="direct-muscles">
                         <h3>Primary Muscles</h3>
-                        <div id="edit-direct-muscles" class="muscle-options" role="group"></div>
+                        <div id="edit-direct-muscles" class="muscle-options" role="group" aria-label="Edit primary muscles">
+                            <!-- Will be populated -->
+                        </div>
                     </div>
                     <div class="indirect-muscles">
                         <h3>Secondary Muscles</h3>
-                        <div id="edit-indirect-muscles" class="muscle-options" role="group"></div>
+                        <div id="edit-indirect-muscles" class="muscle-options" role="group" aria-label="Edit secondary muscles">
+                            <!-- Will be populated -->
+                        </div>
                     </div>
                 </div>
             </form>
@@ -166,12 +183,13 @@
                 <button id="close-details-modal" class="secondary-button">
                     <i class="fas fa-times"></i> Close
                 </button>
-                <button id="close-modal" class="close-modal" type="button">&times;</button>
-                <button id="close-details-modal" class="close-modal" type="button">&times;</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js" defer></script>
+    <!-- Scripts -->
+    <script type="module" src="data.js"></script>
+    <script type="module" src="ui.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>

@@ -1,4 +1,6 @@
-/* Update color variables */
+/* styles.css */
+
+/* Color Variables */
 :root {
     --primary-color: #333333;       /* Dark gray */
     --secondary-color: #555555;     /* Medium gray */
@@ -12,6 +14,7 @@
     --shadow-large: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Global Styles */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
@@ -21,19 +24,25 @@ body {
     line-height: 1.6;
 }
 
-/* Simplify header */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+/* Header Styles */
 header {
     background-color: var(--background-color);
     color: var(--text-primary);
     padding: 1.5rem;
     box-shadow: var(--shadow);
+    text-align: center;
 }
 
 header h1 {
     margin: 0;
     font-size: 1.8rem;
     font-weight: 600;
-    text-align: center;
 }
 
 nav {
@@ -43,7 +52,6 @@ nav {
     margin-top: 1rem;
 }
 
-/* Simplify navigation links and buttons */
 nav a, nav button {
     background-color: transparent;
     color: var(--text-primary);
@@ -61,12 +69,7 @@ nav a:hover, nav button:hover {
     transform: translateY(-1px);
 }
 
-main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
-}
-
+/* Week Selector */
 .week-selector {
     text-align: center;
     font-size: 1.2rem;
@@ -75,67 +78,63 @@ main {
     font-weight: 600;
 }
 
-/* Simplify card and modal backgrounds */
-.calendar, .exercise-form, .exercise-list, .modal-content, .exercise-details-content {
+.week-nav-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.week-nav-button:hover {
+    color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+/* Calendar Styles */
+.calendar {
     background-color: var(--card-background);
     border-radius: 12px;
     box-shadow: var(--shadow-large);
     padding: 1.5rem;
 }
 
-/* Adjust calendar layout for better readability */
 .week {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    max-width: 100%;
     margin: 0 auto;
 }
 
-/* Simplify day styling */
 .day {
     background: var(--background-color);
     border-radius: 8px;
     padding: 1.5rem;
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
     min-height: 300px;
     display: flex;
     flex-direction: column;
-}
-
-.day:hover {
-    transform: none;
-    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
 }
 
 .day h2 {
     margin: 0 0 1rem 0;
     color: var(--primary-color);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
+.day:hover {
+    box-shadow: var(--shadow);
+}
+
+/* Exercises List */
 .exercises-list {
-    min-height: 50px;
+    flex: 1;
     margin-bottom: 1rem;
 }
 
-/* Remove unnecessary effects from exercise items */
-.exercise-item, .exercise-item:hover {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 0.8rem;
-    margin-bottom: 0.8rem;
-    transition: all 0.2s ease;
-    transform: none;
-}
-
-/* Style exercise items better */
 .exercise-item {
     background: var(--card-background);
     border: 1px solid var(--border-color);
@@ -145,10 +144,16 @@ main {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    transition: all 0.2s ease;
 }
 
-/* Style exercise header */
-.exercise-item .exercise-header {
+.exercise-item:hover {
+    background: var(--background-color);
+    transform: translateY(-1px);
+}
+
+/* Exercise Header */
+.exercise-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -156,16 +161,20 @@ main {
     padding-bottom: 0.5rem;
 }
 
-/* Style exercise details */
-.exercise-item .exercise-details {
+.exercise-header span {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Exercise Details */
+.exercise-details {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 0.5rem;
     font-size: 0.9rem;
 }
 
-/* Style set information */
-.exercise-item .set-info {
+.set-info {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
@@ -175,8 +184,7 @@ main {
     border-radius: 4px;
 }
 
-/* Style input fields in exercises */
-.exercise-item input[type="number"] {
+.set-info input[type="number"] {
     width: 100%;
     padding: 0.4rem;
     border: 1px solid var(--border-color);
@@ -184,10 +192,7 @@ main {
     text-align: center;
 }
 
-.exercise-item > div {
-    max-width: 80%;
-}
-
+/* Add Exercise Button */
 .add-exercise {
     width: 100%;
     padding: 0.8rem;
@@ -205,6 +210,7 @@ main {
     transform: translateY(-1px);
 }
 
+/* Delete Exercise Button */
 .delete-exercise {
     background: var(--primary-color);
     color: white;
@@ -212,8 +218,9 @@ main {
     border-radius: 4px;
     width: 28px;
     height: 28px;
-    line-height: 28px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -222,9 +229,9 @@ main {
     background: var(--accent-color);
 }
 
-/* Update modal styles to ensure it's hidden by default */
+/* Modal Styles */
 .modal {
-    display: none;  /* Start with display none */
+    display: none;  /* Hidden by default */
     position: fixed;
     top: 0;
     left: 0;
@@ -232,12 +239,12 @@ main {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-}
-
-.modal.show {  /* Add this class when showing the modal */
-    display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.modal.show {
+    display: flex;
 }
 
 .modal-content {
@@ -248,7 +255,7 @@ main {
     border-radius: 12px;
     box-shadow: var(--shadow-large);
     animation: modalSlideIn 0.3s ease;
-    margin: 0;
+    position: relative;
 }
 
 @keyframes modalSlideIn {
@@ -262,24 +269,60 @@ main {
     }
 }
 
-/* Simplify inputs and selects */
-select, input {
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+input, select {
     width: 100%;
     padding: 0.8rem;
-    margin-bottom: 1rem;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     background-color: var(--card-background);
     color: var(--text-primary);
     font-size: 1rem;
+    box-sizing: border-box;
 }
 
-select:focus, input:focus {
+input:focus, select:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.2);
 }
 
+.input-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.checkbox-text {
+    font-size: 1rem;
+}
+
+/* Buttons */
 button {
     background-color: var(--primary-color);
     color: white;
@@ -289,6 +332,7 @@ button {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
+    font-size: 1rem;
 }
 
 button:hover {
@@ -296,6 +340,38 @@ button:hover {
     transform: translateY(-1px);
 }
 
+.primary-button {
+    background-color: var(--primary-color);
+}
+
+.secondary-button {
+    background-color: var(--secondary-color);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Close Modal Button */
+.close-modal {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.close-modal:hover {
+    color: var(--text-primary);
+}
+
+/* Exercise Form and List */
 .exercise-form, .exercise-list {
     background: var(--card-background);
     padding: 2rem;
@@ -304,6 +380,13 @@ button:hover {
     margin-bottom: 2rem;
 }
 
+.exercise-form h2, .exercise-list h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Muscle Selection */
 .muscle-selection {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -344,222 +427,8 @@ button:hover {
     transform: translateY(-1px);
 }
 
-.delete-custom-exercise {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8rem 1.5rem;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.delete-custom-exercise:hover {
-    background: var(--accent-color);
-    transform: translateY(-1px);
-}
-
-/* Add these new styles */
-
-#edit-exercise-form {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-}
-
-#edit-exercise-form input,
-#edit-exercise-form select {
-    margin-bottom: 15px;
-}
-
-.exercise-details-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-exercise-details-actions button {
-    flex: 1;
-}
-
-#edit-exercise-btn {
-    background-color: var(--primary-color);
-}
-
-#save-exercise-btn {
-    background-color: #4CAF50;
-}
-
-#edit-exercise-form .muscle-selection {
-    margin-top: 15px;
-}
-
-/* Fix for exercise details modal */
-.exercise-details-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: none;
-}
-
-.exercise-details-content {
-    background: var(--card-background);
-    width: 90%;
-    max-width: 500px;
-    margin: 20vh auto; /* Centers vertically at 20% from top */
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-large);
-    position: relative; /* Changed from fixed */
-    animation: modalSlideIn 0.3s ease;
-}
-
-.exercise-details-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-    margin: 1rem 0;
-    align-items: center;
-}
-
-.exercise-details-label {
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-/* Add these styles for better modal positioning */
-.modal, .exercise-details-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: none;
-    display: flex; /* Ensure modal uses flex display */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content, .exercise-details-content {
-    background: var(--card-background);
-    width: 90%;
-    max-width: 500px;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-large);
-    position: relative;
-    animation: modalSlideIn 0.3s ease;
-    margin: 0;
-}
-
-/* Add these new styles */
+/* Exercise List Items */
 #exercise-list .exercise-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem;
-    margin-bottom: 0.8rem;
-    background: transparent;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-#exercise-list .exercise-item:hover {
-    background: #f0f0f0;
-}
-
-/* Update these specific styles for the delete button */
-#exercise-list .delete-exercise {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    width: 24px;
-    height: 24px;
-    min-width: 24px; /* Add this to prevent stretching */
-    padding: 0;      /* Reset padding */
-    display: flex;   /* Add this for better centering */
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    margin-left: 10px; /* Add some space between text and button */
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-#exercise-list .delete-exercise:hover {
-    background: var(--accent-color);
-    transform: scale(1.1);
-}
-
-#exercise-list span {
-    flex: 1;
-    cursor: pointer;
-}
-
-/* Style the new input fields in the modal */
-.modal-content input[type="number"],
-.modal-content input[type="text"] {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--card-background);
-}
-
-/* Style for the repeating checkbox */
-.modal-content label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.modal-content label input[type="checkbox"] {
-    margin-right: 0.5rem;
-}
-
-/* Style for actual progress inputs */
-.exercise-item input[type="number"] {
-    width: 60px;
-    padding: 0.4rem;
-    margin: 0.2rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-}
-
-/* Style for delete button within exercise items */
-.exercise-item .delete-exercise {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-#exercise-list .exercise-item {
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -578,40 +447,92 @@ exercise-details-actions button {
 
 #exercise-list .exercise-item span {
     flex: 1;
-    padding: 0.5rem;
+    font-weight: 500;
 }
 
-.modal {
-    display: none;
+/* Exercise Details Modal */
+.exercise-details-modal {
+    display: none;  /* Hidden by default */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-}
-
-.modal.show {
-    display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    position: relative;
-    min-width: 300px;
-    max-width: 500px;
+.exercise-details-modal.show {
+    display: flex;
 }
 
-.close-modal {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    z-index: 1001;
+.exercise-details-content {
+    background: var(--card-background);
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-large);
+    animation: modalSlideIn 0.3s ease;
+    position: relative;
+}
+
+.exercise-details-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+    align-items: center;
+}
+
+.exercise-details-label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.helper-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .week {
+        grid-template-columns: 1fr;
+    }
+
+    .muscle-selection {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content, .exercise-details-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Exercise Details Modal Styles */
+.exercise-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+}
+
+.exercise-details-grid div {
+    padding: 0.5rem 0;
+}
+
+/* Ensure the modal is properly styled */
+#exercise-details-modal .modal-content {
+    /* ...existing modal styles... */
+    max-width: 600px;
 }
