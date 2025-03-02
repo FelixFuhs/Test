@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Exercise History - Gym Training Tracker</title>
+    <meta name="description" content="View your exercise history and progress">
+    <meta name="theme-color" content="#2A9D8F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="mobile.css" as="style">
+    <link rel="preload" href="data.js" as="script">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile.css" media="screen and (max-width: 767px)">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Additional styles specific to exercise history page */
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .exercise-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(42, 157, 143, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .exercise-title {
+            flex: 1;
+        }
+        
+        .exercise-title h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.8rem;
+            color: var(--dark-color);
+        }
+        
+        .exercise-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--gray-medium);
+            font-size: 0.95rem;
+        }
+        
+        .exercise-category {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .exercise-muscles {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tag {
+            background: rgba(42, 157, 143, 0.1);
+            color: var(--primary-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .record-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .record-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .record-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .record-title {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+            margin-bottom: 0.5rem;
+        }
+        
+        .record-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .record-date {
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+        }
+        
+        .chart-container {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin: 0;
+        }
+        
+        .chart-filters {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .chart-filter {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--background-color);
+            color: var(--gray-dark);
+            border: none;
+        }
+        
+        .chart-filter.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .chart-canvas-container {
+            height: 300px;
+            width: 100%;
+        }
+        
+        .history-container {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .history-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin: 0;
+        }
+        
+        .history-count {
+            background: rgba(42, 157, 143, 0.1);
+            color: var(--primary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .history-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .history-item:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-date {
+            font-weight: 500;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .history-date i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        
+        .history-details {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .history-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+        
+        .history-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-medium);
+            margin-bottom: 0.2rem;
+        }
+        
+        .history-stat-value {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        /* Mobile specific styles */
+        @media (max-width: 767px) {
+            .exercise-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1rem;
+                padding: 1.2rem;
+            }
+            
+            .exercise-subtitle {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .record-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .history-list {
+                max-height: 400px;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            
+            .history-details {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header>
+        <h1>Exercise History</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Exercise Header -->
+        <div class="exercise-header">
+            <div class="exercise-icon">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="exercise-title">
+                <h1>Bench Press</h1>
+                <div class="exercise-subtitle">
+                    <div class="exercise-category">
+                        <i class="fas fa-folder"></i> Category: <span class="tag">Chest</span>
+                    </div>
+                    <div class="exercise-muscles">
+                        <i class="fas fa-person"></i> Muscles: <span class="tag">Chest</span> <span class="tag">Triceps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Personal Records -->
+        <div class="record-grid">
+            <div class="record-card">
+                <div class="record-title">1RM (Estimated)</div>
+                <div class="record-value">95 kg</div>
+                <div class="record-date">Feb, 10, 2024</div>
+            </div>
+            
+            <div class="record-card">
+                <div class="record-title">Volume PR</div>
+                <div class="record-value">3,200 kg</div>
+                <div class="record-date">Jan 27, 2024</div>
+            </div>
+            
+            <div class="record-card">
+                <div class="record-title">Reps PR (80 kg)</div>
+                <div class="record-value">10 reps</div>
+                <div class="record-date">Feb 03, 2024</div>
+            </div>
+            
+            <div class="record-card">
+                <div class="record-title">Best Set (Weight)</div>
+                <div class="record-value">90 kg × 3</div>
+                <div class="record-date">Feb 10, 2024</div>
+            </div>
+        </div>
+        
+        <!-- Strength Progression Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">Strength Progression</h2>
+                <div class="chart-filters">
+                    <button class="chart-filter" data-period="month">Month</button>
+                    <button class="chart-filter active" data-period="3months">3 Months</button>
+                    <button class="chart-filter" data-period="6months">6 Months</button>
+                    <button class="chart-filter" data-period="year">Year</button>
+                </div>
+            </div>
+            <div class="chart-canvas-container">
+                <canvas id="strengthChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Volume Progression Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">Volume Progression</h2>
+                <div class="chart-filters">
+                    <button class="chart-filter" data-period="month">Month</button>
+                    <button class="chart-filter active" data-period="3months">3 Months</button>
+                    <button class="chart-filter" data-period="6months">6 Months</button>
+                    <button class="chart-filter" data-period="year">Year</button>
+                </div>
+            </div>
+            <div class="chart-canvas-container">
+                <canvas id="volumeChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Exercise History -->
+        <div class="history-container">
+            <div class="history-header">
+                <h2 class="history-title">Exercise History</h2>
+                <div class="history-count">15 sessions</div>
+            </div>
+            
+            <div class="history-list">
+                <!-- History Item 1 -->
+                <div class="history-item">
+                    <div class="history-date">
+                        <i class="far fa-calendar"></i> Feb 10, 2024
+                    </div>
+                    <div class="history-details">
+                        <div class="history-stat">
+                            <div class="history-stat-label">Sets</div>
+                            <div class="history-stat-value">4</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Top Set</div>
+                            <div class="history-stat-value">90kg×3</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Volume</div>
+                            <div class="history-stat-value">2,880 kg</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">e1RM</div>
+                            <div class="history-stat-value">95 kg</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Item 2 -->
+                <div class="history-item">
+                    <div class="history-date">
+                        <i class="far fa-calendar"></i> Feb 03, 2024
+                    </div>
+                    <div class="history-details">
+                        <div class="history-stat">
+                            <div class="history-stat-label">Sets</div>
+                            <div class="history-stat-value">4</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Top Set</div>
+                            <div class="history-stat-value">80kg×10</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Volume</div>
+                            <div class="history-stat-value">3,200 kg</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">e1RM</div>
+                            <div class="history-stat-value">94 kg</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Item 3 -->
+                <div class="history-item">
+                    <div class="history-date">
+                        <i class="far fa-calendar"></i> Jan 27, 2024
+                    </div>
+                    <div class="history-details">
+                        <div class="history-stat">
+                            <div class="history-stat-label">Sets</div>
+                            <div class="history-stat-value">4</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Top Set</div>
+                            <div class="history-stat-value">85kg×7</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Volume</div>
+                            <div class="history-stat-value">2,975 kg</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">e1RM</div>
+                            <div class="history-stat-value">93 kg</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Item 4 -->
+                <div class="history-item">
+                    <div class="history-date">
+                        <i class="far fa-calendar"></i> Jan 20, 2024
+                    </div>
+                    <div class="history-details">
+                        <div class="history-stat">
+                            <div class="history-stat-label">Sets</div>
+                            <div class="history-stat-value">3</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Top Set</div>
+                            <div class="history-stat-value">82.5kg×6</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Volume</div>
+                            <div class="history-stat-value">2,475 kg</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">e1RM</div>
+                            <div class="history-stat-value">90 kg</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Item 5 -->
+                <div class="history-item">
+                    <div class="history-date">
+                        <i class="far fa-calendar"></i> Jan 13, 2024
+                    </div>
+                    <div class="history-details">
+                        <div class="history-stat">
+                            <div class="history-stat-label">Sets</div>
+                            <div class="history-stat-value">4</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Top Set</div>
+                            <div class="history-stat-value">80kg×8</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">Volume</div>
+                            <div class="history-stat-value">2,560 kg</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-label">e1RM</div>
+                            <div class="history-stat-value">88 kg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+        <a href="mobile_training_log.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="workout_planner.html" class="nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Plans</span>
+        </a>
+        <a href="progress-dashboard.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="manage_exercises.html" class="nav-item active">
+            <i class="fas fa-dumbbell"></i>
+            <span>Exercises</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart Filter Functionality
+            document.querySelectorAll('.chart-filters').forEach(filterContainer => {
+                filterContainer.querySelectorAll('.chart-filter').forEach(filter => {
+                    filter.addEventListener('click', function() {
+                        // Remove active class from all siblings
+                        filterContainer.querySelectorAll('.chart-filter').forEach(f => {
+                            f.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked filter
+                        this.classList.add('active');
+                        
+                        // In a real app, this would update the chart data
+                        const period = this.dataset.period;
+                        console.log(`Switching to ${period} period`);
+                        
+                        // For this demo, we'll just rerender the charts with new data
+                        if (filterContainer.closest('.chart-container').querySelector('#strengthChart')) {
+                            renderStrengthChart(period);
+                        } else if (filterContainer.closest('.chart-container').querySelector('#volumeChart')) {
+                            renderVolumeChart(period);
+                        }
+                    });
+                });
+            });
+            
+            // Create Strength Progression Chart
+            renderStrengthChart('3months');
+            
+            // Create Volume Progression Chart
+            renderVolumeChart('3months');
+        });
+        
+        // Render Strength Chart
+        function renderStrengthChart(period) {
+            // Sample data - in a real app, this would come from your workout history
+            let labels, data, estimated1RMData;
+            
+            switch(period) {
+                case 'month':
+                    labels = ['Jan 13', 'Jan 20', 'Jan 27', 'Feb 03', 'Feb 10'];
+                    data = [80, 82.5, 85, 80, 90]; // Top set weight
+                    estimated1RMData = [88, 90, 93, 94, 95]; // Estimated 1RM
+                    break;
+                case '3months':
+                    labels = ['Dec 02', 'Dec 16', 'Dec 30', 'Jan 13', 'Jan 27', 'Feb 10'];
+                    data = [77.5, 80, 77.5, 80, 85, 90];
+                    estimated1RMData = [85, 87, 86, 88, 93, 95];
+                    break;
+                case '6months':
+                    labels = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+                    data = [72.5, 75, 77.5, 80, 85, 90];
+                    estimated1RMData = [80, 83, 85, 87, 92, 95];
+                    break;
+                case 'year':
+                    labels = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+                    data = [60, 65, 67.5, 70, 70, 72.5, 72.5, 75, 77.5, 80, 85, 90];
+                    estimated1RMData = [66, 72, 75, 78, 77, 80, 80, 83, 85, 87, 92, 95];
+                    break;
+                default:
+                    labels = ['Jan 13', 'Jan 20', 'Jan 27', 'Feb 03', 'Feb 10'];
+                    data = [80, 82.5, 85, 80, 90];
+                    estimated1RMData = [88, 90, 93, 94, 95];
+            }
+            
+            const ctx = document.getElementById('strengthChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.strengthChart) {
+                window.strengthChart.destroy();
+            }
+            
+            // Create new chart
+            window.strengthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Top Set Weight (kg)',
+                            data: data,
+                            backgroundColor: 'rgba(42, 157, 143, 0.2)',
+                            borderColor: 'rgba(42, 157, 143, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(42, 157, 143, 1)',
+                            pointRadius: 4,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Estimated 1RM (kg)',
+                            data: estimated1RMData,
+                            backgroundColor: 'rgba(231, 111, 81, 0.2)',
+                            borderColor: 'rgba(231, 111, 81, 1)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'rgba(231, 111, 81, 1)',
+                            pointRadius: 4,
+                            borderDash: [5, 5],
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Weight (kg)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Render Volume Chart
+        function renderVolumeChart(period) {
+            // Sample data - in a real app, this would come from your workout history
+            let labels, data;
+            
+            switch(period) {
+                case 'month':
+                    labels = ['Jan 13', 'Jan 20', 'Jan 27', 'Feb 03', 'Feb 10'];
+                    data = [2560, 2475, 2975, 3200, 2880];
+                    break;
+                case '3months':
+                    labels = ['Dec 02', 'Dec 16', 'Dec 30', 'Jan 13', 'Jan 27', 'Feb 10'];
+                    data = [2320, 2400, 2250, 2560, 2975, 2880];
+                    break;
+                case '6months':
+                    labels = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+                    data = [2100, 2200, 2300, 2350, 2700, 2880];
+                    break;
+                case 'year':
+                    labels = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
+                    data = [1800, 1900, 2000, 2050, 2100, 2120, 2100, 2200, 2300, 2350, 2700, 2880];
+                    break;
+                default:
+                    labels = ['Jan 13', 'Jan 20', 'Jan 27', 'Feb 03', 'Feb 10'];
+                    data = [2560, 2475, 2975, 3200, 2880];
+            }
+            
+            const ctx = document.getElementById('volumeChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.volumeChart) {
+                window.volumeChart.destroy();
+            }
+            
+            // Create new chart
+            window.volumeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Volume (kg)',
+                            data: data,
+                            backgroundColor: 'rgba(42, 157, 143, 0.6)',
+                            borderColor: 'rgba(42, 157, 143, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Volume (kg)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

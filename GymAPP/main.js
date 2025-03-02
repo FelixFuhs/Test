@@ -36,7 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Initialize the training log page (index.html is now the training log)
             console.log("Initializing training log page");
             initLogger();
-        } else if (currentPage === 'workout_planner.html') {
+        } 
+        // ADD THIS ELSE IF FOR training_log.html
+        else if (currentPage === 'training_log.html') {
+            console.log("Initializing training log page (training_log.html)");
+            initLogger();
+        }
+        else if (currentPage === 'workout_planner.html') {
             // Initialize workout planner page
             console.log("Initializing workout planner page");
             initPlanner();

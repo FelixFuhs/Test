@@ -2028,3 +2028,137 @@ button:hover {
         text-align: center;
     }
 }
+/* Rest Timer Styles */
+.rest-timer-container {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.rest-timer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rest-timer-display {
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: monospace;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+}
+
+.rest-timer-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.rest-timer-button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.rest-timer-button:disabled {
+    background-color: var(--secondary-color);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* PR Styles */
+.workout-prs {
+    margin-top: 1rem;
+}
+
+.pr-item {
+    background: linear-gradient(90deg, rgba(255,223,0,0.2) 0%, rgba(255,255,255,0) 100%);
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    border-left: 3px solid gold;
+}
+
+.pr-exercise {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.pr-details {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.pr-value {
+    font-weight: 500;
+}
+
+.pr-increase {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+/* Set Row Improvements */
+.set-row {
+    transition: all 0.3s ease;
+}
+
+.set-row.completed {
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 3px solid #4CAF50;
+}
+
+/* Additional Exercise Info Styles */
+.exercise-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-card {
+    background: white;
+    border-radius: 6px;
+    padding: 0.8rem;
+    box-shadow: var(--shadow);
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    font-weight: 600;
+}
+
+.info-value.new-pr {
+    color: #F9A825;
+    position: relative;
+}
+
+.info-value.new-pr::after {
+    content: "New PR!";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #F9A825;
+    color: white;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    transform: rotate(15deg);
+}

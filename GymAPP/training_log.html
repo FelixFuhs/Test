@@ -51,69 +51,31 @@
     </header>
 
     <main>
-        <div class="week-selector">
-            <button id="prev-week" class="week-nav-button" aria-label="Previous Week">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <span id="current-week">Week of January 1, 2024</span>
-            <button id="next-week" class="week-nav-button" aria-label="Next Week">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+        <!-- Day View Header -->
+        <div class="day-view-header">
+            <div class="current-date-display">
+                <span id="current-date">Today: January 1, 2024</span>
+                <span id="current-day">Monday</span>
+            </div>
+            <div class="plan-selection">
+                <label for="current-plan-select">Current Plan:</label>
+                <select id="current-plan-select">
+                    <option value="">Select a plan</option>
+                    <!-- Plans will be populated here -->
+                </select>
+            </div>
         </div>
 
-        <div class="calendar">
-            <div class="week">
-                <!-- Days of the week -->
-                <div class="day" data-day="monday">
-                    <h2>Monday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="monday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-                <div class="day" data-day="tuesday">
-                    <h2>Tuesday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="tuesday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-                <div class="day" data-day="wednesday">
-                    <h2>Wednesday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="wednesday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-                <div class="day" data-day="thursday">
-                    <h2>Thursday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="thursday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-                <div class="day" data-day="friday">
-                    <h2>Friday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="friday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-                <div class="day" data-day="saturday">
-                    <h2>Saturday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="saturday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-                <div class="day" data-day="sunday">
-                    <h2>Sunday</h2>
-                    <div class="exercises-list"></div>
-                    <button class="start-day-workout" data-day="sunday">
-                        <i class="fas fa-play"></i> Start Workout
-                    </button>
-                </div>
-            </div>
+        <!-- Container for displaying the current day's exercises -->
+        <div id="day-exercises">
+            <!-- Exercises for the current day will be rendered here -->
+        </div>
+
+        <!-- Button to start today's workout -->
+        <div class="start-workout-container">
+            <button id="start-day-workout" class="nav-button primary-button">
+                <i class="fas fa-play"></i> Start Today's Workout
+            </button>
         </div>
     </main>
 
@@ -168,6 +130,9 @@
                 <div class="workout-timer">
                     <span id="workout-timer-display">00:00:00</span>
                 </div>
+                <div class="estimated-1rm">
+                    <span id="current-1rm">1RM: N/A</span>
+                </div>
                 <button id="finish-workout" class="finish-workout-btn">
                     <i class="fas fa-flag-checkered"></i> Finish Workout
                 </button>
@@ -188,6 +153,7 @@
                         </div>
                     </div>
                     
+                    <!-- Updated exercise-info div -->
                     <div class="exercise-info">
                         <div class="info-card">
                             <div class="info-label">Target</div>
@@ -197,16 +163,15 @@
                             <div class="info-label">Previous Best</div>
                             <div id="exercise-previous" class="info-value">80kg × 10 (Feb 20)</div>
                         </div>
+                        <div class="info-card">
+                            <div class="info-label">Estimated 1RM</div>
+                            <div id="exercise-1rm" class="info-value">N/A</div>
+                        </div>
                     </div>
                     
+                    <!-- Sets container: sets will be dynamically added here -->
                     <div id="sets-container" class="sets-container">
                         <!-- Sets will be dynamically added here -->
-                    </div>
-                    
-                    <div class="set-actions">
-                        <button id="add-set" class="secondary-button">
-                            <i class="fas fa-plus"></i> Add Set
-                        </button>
                     </div>
                 </div>
                 
@@ -237,6 +202,17 @@
                 <div class="summary-stat">
                     <div class="stat-label">Sets</div>
                     <div id="complete-sets" class="stat-value">24</div>
+                </div>
+            </div>
+
+            <!-- Personal Records section -->
+            <div class="workout-summary-section">
+                <h3>Personal Records</h3>
+                <div id="workout-prs" class="workout-prs">
+                    <!-- PRs will be displayed here -->
+                    <div class="empty-state small">
+                        <p>No personal records achieved in this workout</p>
+                    </div>
                 </div>
             </div>
             

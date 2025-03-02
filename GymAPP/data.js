@@ -114,3 +114,50 @@ export function changeWeek(days) {
     }
     // Note: UI updates like updateWeekDisplay() will be handled in ui.js
 }
+// Performance history management
+export let performanceHistory = {};
+
+export function loadPerformanceHistory() {
+    const stored = localStorage.getItem('performanceHistory');
+    performanceHistory = stored ? JSON.parse(stored) : {};
+    return performanceHistory;
+}
+
+export function savePerformanceHistory() {
+    localStorage.setItem('performanceHistory', JSON.stringify(performanceHistory));
+}
+
+// Get an exercise's current estimated 1RM
+export function getExerciseEstimated1RM(exerciseName) {
+    if (!performanceHistory[exerciseName]) {
+        return 0;
+    }
+    return performanceHistory[exerciseName].estimated1RM || 0;
+}
+
+// Update an exercise's estimated 1RM
+export function updateExerciseEstimated1RM(exerciseName, newEstimate) {
+    if (!performanceHistory[exerciseName]) {
+        performanceHistory[exerciseName] = {
+            estimated1RM: 0,
+            sets: [],
+            progression: []
+        };
+    }
+    
+    // Only update if the new estimate is valid and better than current
+    if (newEstimate > 0 && newEstimate > performanceHistory[exerciseName].estimated1RM) {
+        performanceHistory[exerciseName].estimated1RM = newEstimate;
+        
+        // Add to progression history
+        performanceHistory[exerciseName].progression.push({
+            date: new Date().toISOString(),
+            estimated1RM: newEstimate
+        });
+        
+        savePerformanceHistory();
+        return true;
+    }
+    
+    return false;
+}
